@@ -23,7 +23,7 @@ onMounted(()=>{
 <template>
     <div class="article_body_cont">
 
-  
+      
     <div class="articles_container">
        
         <div class="articles_wrapper" v-for="article in articles" :key="article.id">

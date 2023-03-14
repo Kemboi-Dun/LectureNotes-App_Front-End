@@ -7,6 +7,8 @@ import Signin_Page from '../views/Signin_Page.vue'
 import Login_Page from '../views/Login_Page.vue'
 import LandingPage from '../views/LandingPage.vue'
 import Type from '../components/Type.vue'
+import SubjectsFiles from '../components/SubjectsFiles.vue'
+import Subjects from '../views/Subjects.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -45,7 +47,12 @@ const router = createRouter({
       path: '/login_page',
       name: 'login',
       component: Login_Page,
-    }
+    },
+    {
+      path: '/types_page/:type',
+      name: 'types',
+      component: Subjects,
+    },
   ]
 })
 

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch,onMounted } from "vue";
+import { ref,onMounted } from "vue";
 import {useRouter} from 'vue-router';
 import {getApi} from '../api/Api';
 const router = useRouter();
