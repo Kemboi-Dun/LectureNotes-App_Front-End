@@ -1,7 +1,12 @@
 <script setup>
-import { ref,onMounted } from 'vue';
+import { ref,onMounted,computed, watch } from 'vue';
+import { getApi } from '../api/Api';
 import router from '../router';
 const tokenExists = ref(false);
+
+const searchQuery = ref('');
+// const filteredItem= ref([]);
+const files = ref([]);
 
 const handleToken = ()=>{
 if( tokenExists.value = localStorage.getItem('token') !== null){
@@ -10,9 +15,31 @@ if( tokenExists.value = localStorage.getItem('token') !== null){
 }
 }
 
-// onMounted(()=>{
-//     tokenExists.value = localStorage.getItem('token') !== null ? router.push ({name: 'home'}) : router.push ({name: 'home_page'})
-// })
+const getFilesApi = ()=>{
+    return getApi.get('/files');
+}
+
+const filteredItems = computed(() => {
+    if (!searchQuery.value) {
+        return searchQuery.value
+      } else {
+      return files.value.filter(item => item.Name.toLowerCase().includes(searchQuery.value.toLowerCase()) || item.AuthorName.toLowerCase().includes(searchQuery.value.toLowerCase()) || item.UnitCode.toLowerCase().includes(searchQuery.value.toLowerCase()) || item.UnitName.toLowerCase().includes(searchQuery.value.toLowerCase()))
+      }
+    })
+
+    watch(searchQuery, () => {
+      filteredItems.value
+    })
+
+onMounted(()=>{
+    getFilesApi()
+    .then((response)=>{
+        files.value = response.data.files;
+        console.log(files.value);
+        // filteredItems()
+        console.log(filteredItems.value);
+    })
+})
 
 
 </script>
@@ -28,7 +55,10 @@ if( tokenExists.value = localStorage.getItem('token') !== null){
            </h1>
         </div>
         <div class="search_bar">
-            <input type="search" placeholder="Search...">
+            <input type="search" v-model="searchQuery" placeholder="Search...">
+            <ul>
+      <li v-for="item in filteredItems" :key="item.ID">{{ item.Name }}</li>
+    </ul>
         </div>
         <div class="auth_buttons">
             <RouterLink :to="{ name: 'login'}" v-if="tokenExists">LogIn</RouterLink>
