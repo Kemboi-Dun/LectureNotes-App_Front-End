@@ -84,11 +84,15 @@ const handle_submit = () => {
         <div>
           <label for="school" v-if="role == 'lecturer'">Department</label>
           <select name="school" class="select_cont" v-model="school" v-if="role == 'lecturer'">
-            <option value="Computer Science">Computing and Informatics</option>
-            <option value="Education">Education</option>
-            <option value="Business">Business</option>
-            <option value="Health Science">Health Science</option>
-            <option value="Hospitality">Hospitality</option>
+            <option value="Business">SCHOOL OF BUSINESS</option>
+            <option value="ComputerScience">SCHOOL OF COMPUTING AND INFORMATICS</option>
+            <option value="">SCHOOL OF EDUCATION</option>
+            <option value="Hospitality">SCHOOL OF HOSPITALITY AND TOURISM</option>
+            <option value="Health">SCHOOL OF HEALTH</option>
+            <option value="Library">DEPARTMENT OF LIBRARY AND INFORMATION SCIENCE</option>
+            <option value="Humanities">SCHOOL OF HUMANITIES AND SOCIAL SCIENCES</option>
+            <option value="Kasneb">KASNEB COURSES</option>
+            <option value="Knec">KNEC COURSES</option>
           </select>
         </div>
 

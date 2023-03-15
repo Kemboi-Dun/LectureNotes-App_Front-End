@@ -1,13 +1,19 @@
 <script setup>
 import { ref } from 'vue';
+import ArticlesAdmin from './ArticlesAdmin.vue';
 import Footer from '../components/Footer.vue';
 import AdminNav from './AdminNav.vue';
 import AllFiles from './AllFiles.vue';
 import UploadFile from './UploadFile.vue';
+import NotesAdmin from './NotesAdmin.vue'
+import Account from './Account.vue'
 
 const tokenExists = ref(false)
 const showUploads = ref(false);
 const showAll = ref(true);
+const showArticles = ref(false);
+const showNotes = ref(false);
+const showAccounts = ref(false);
 
 const handleToken = () => {
   if ((tokenExists.value = localStorage.getItem('token') !== null)) {
@@ -16,15 +22,43 @@ const handleToken = () => {
   }
 }
 
-const showContainer = ()=>{
-  showUploads.value = true
-  showAll.value = false
-}
 const showAllFiles = ()=>{
-    showAll.value = true
-    showUploads.value = false
+    showAll.value = true;
+    showUploads.value = false;
+    showArticles.value = false;
+    showNotes.value = false;
+    showAccounts.value = false;
 }
 
+const showUpload = ()=>{
+  showUploads.value = true;
+  showAll.value = false;
+  showArticles.value = false;
+  showNotes.value = false;
+  showAccounts.value = false;
+}
+
+const showArticle = ()=>{
+    showArticles.value = true;
+    showAll.value = false;
+    showUploads.value = false;
+    showNotes.value = false;
+    showAccounts.value = false;
+}
+const showNote = ()=>{
+    showNotes.value = true;
+    showAll.value = false;
+    showUploads.value = false;
+    showArticles.value = false;
+    showAccounts.value = false;
+}
+const showAccount = ()=>{
+    showAccounts.value = true;
+    showAll.value = false;
+    showUploads.value = false;
+    showArticles.value = false;
+    showNotes.value = false;
+}
 
 </script>
 
@@ -45,15 +79,15 @@ const showAllFiles = ()=>{
 
       <div class="auth_buttons">
         <!-- VIEW ALL FILES -->
-        <button @click="showAllFiles" >View All Files</button>
+        <button @click="showAllFiles" v-if="!showAll" >View All Files</button>
         <!-- UPLOAD FILE -->
-        <button @click="showContainer" >Upload File</button>
+        <button @click="showUpload" v-if="!showUploads" >Upload File</button>
         <!-- WRITE ARTICLE -->
-        <button @click="showContainer" >Write Article</button>
+        <button @click="showArticle" v-if="!showArticles" >Write Article</button>
         <!-- VIEW OWN NOTES -->
-        <RouterLink :to="{ name: 'login' }" v-if="!tokenExists">View Own Notes</RouterLink>
+        <button @click="showNote" v-if="!showNotes">View Own Notes</button>
         <!-- MY ACCOUNT -->
-        <RouterLink :to="{ name: 'login' }" v-if="!tokenExists">My Account</RouterLink>
+        <button @click="showAccount" v-if="!showAccounts">My Account</button>
         <button @click="handleToken" v-if="!tokenExists">Log Out</button>
       </div>
     </nav>
@@ -61,7 +95,69 @@ const showAllFiles = ()=>{
         <div class="dash_wrapper" >
 <AllFiles v-if="showAll"/>
 <UploadFile v-if="showUploads"/>
+<ArticlesAdmin v-if="showArticles"/>
+<NotesAdmin v-if="showNotes"/>
+<Account v-if="showAccounts"/>
         </div>
         <Footer/>
     </div>
 </template>
+
+<style scoped>
+.title a img {
+  height: 3.4em;
+  width: 12em;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.nav_wrapper {
+  width: 90%;
+  margin: auto;
+  align-items: center;
+  padding: 0.5em;
+}
+.nav_wrapper nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2em;
+}
+.title h1 {
+  font-size: 18px;
+}
+.title h1 a {
+  text-decoration: none;
+  color: #f8f8f8;
+}
+
+.auth_buttons {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 2rem;
+}
+.auth_buttons a {
+  text-decoration: none;
+  color: #181818;
+  padding: 0.8rem;
+  border: 1px solid #181818;
+  border-radius: 12px;
+}
+.auth_buttons button {
+  border: none;
+  text-decoration: none;
+  color: #f6f6f6;
+  background: #181818;
+  padding: 0.8rem;
+  border: 1px solid #181818;
+  border-radius: 12px;
+  cursor: pointer;
+}
+.auth_buttons a:hover,
+.auth_buttons button:hover {
+  background: #181818;
+  color: #f8f8f8;
+}
+</style>
