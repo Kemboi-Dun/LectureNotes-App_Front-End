@@ -1,23 +1,59 @@
 <script setup>
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
+import { getApi } from '../api/Api'
 
 const router = useRouter()
-const sign_in_data = reactive({
-  username: '',
-  email: '',
-  password: '',
-  confirmPassword: ''
-})
+const username = ref('')
+const role = ref('')
+const school = ref('')
+const email = ref('')
+const password = ref('')
+const confirmPassword = ref('')
+const user = ref('')
+// const user = ref('USER000');
 const error = ref('')
 
+// POST USER ON SUBMIT
+const getserApi = () => {
+  return getApi.post('/user', {
+    Username: username.value,
+    Role: role.value,
+    School: school.value,
+    Email: email.value,
+    Password: password.value
+  })
+}
+
 const handle_submit = () => {
-  if (sign_in_data.password !== sign_in_data.confirmPassword) {
+  if (password.value !== confirmPassword.value) {
     error.value = 'Passwords do not match !'
+  } else if (role.value === 'lecturer') {
+    getserApi().then((response) => {
+      console.log(response.data)
+      user.value = response.data.user
+      console.log(user.value.ID)
+      localStorage.setItem('token', 123456789)
+    router.push({
+      name: 'admin',
+      params: {
+        id: user.value.School
+      }
+    })
+    })
+
   } else {
-    router.push({ name: 'home' })
+    localStorage.setItem('token', 123456789)
+    router.push({ name: 'home_page' })
   }
-  console.log(sign_in_data)
+  console.log(
+    username.value,
+    role.value,
+    school.value,
+    email.value,
+    password.value,
+    confirmPassword.value
+  )
 }
 </script>
 
@@ -31,46 +67,67 @@ const handle_submit = () => {
       </div>
     </div>
     <form @submit.prevent="handle_submit">
-      <label for="username">Username</label>
-      <input type="text" v-model="sign_in_data.username" placeholder="Username00" required />
-      <label for="role">Role</label>
-<select name="role" class="select_cont">
-    <option value="lecturer">Lecturer</option>
-    <option value="student">Student</option>
-</select>
+      <div class="form_wrap">
+        <div>
+          <label for="username">Username</label>
+          <input type="text" v-model="username" placeholder="Username00" required />
+        </div>
 
-      <label for="email">Email</label>
-      <input type="email" v-model="sign_in_data.email" placeholder="johndoe@gmail.com" required />
+        <div>
+          <label for="role">Role</label>
+          <select name="role" class="select_cont" v-model="role">
+            <option value="lecturer">Lecturer</option>
+            <option value="student">Student</option>
+          </select>
+        </div>
 
+        <div>
+          <label for="school" v-if="role == 'lecturer'">Department</label>
+          <select name="school" class="select_cont" v-model="school" v-if="role == 'lecturer'">
+            <option value="Computer Science">Computing and Informatics</option>
+            <option value="Education">Education</option>
+            <option value="Business">Business</option>
+            <option value="Health Science">Health Science</option>
+            <option value="Hospitality">Hospitality</option>
+          </select>
+        </div>
 
-      <label for="password">Password</label>
-      <input
-        type="password"
-        v-model="sign_in_data.password"
-        placeholder="Enter your password"
-        required
-      />
-      <label for="confirmPassword">Confirm Password</label>
-      <input
-        type="password"
-        v-model="sign_in_data.confirmPassword"
-        placeholder="Confirm your password"
-        required
-      />
+        <div>
+          <label for="email">Email</label>
+          <input type="email" v-model="email" placeholder="johndoe@gmail.com" required />
+        </div>
+
+        <div>
+          <label for="password">Password</label>
+          <input type="password" v-model="password" placeholder="Enter your password" required />
+        </div>
+        <div>
+          <label for="confirmPassword">Confirm Password</label>
+          <input
+            type="password"
+            v-model="confirmPassword"
+            placeholder="Confirm your password"
+            required
+          />
+        </div>
+        <div>
+          -
+          <button type="submit">Register</button>
+        </div>
+      </div>
       <div>
         {{ error }}
       </div>
-      <button type="submit">Register</button>
     </form>
   </div>
 </template>
 
 <style scoped>
-.select_cont{
-    /* border:none; */
-    /* background: #f8f8f8; */
-    height: 3em;
-    padding: 0.5em;
+.select_cont {
+  /* border:none; */
+  /* background: #f8f8f8; */
+  height: 3em;
+  padding: 0.5em;
   border-radius: 4px;
   border: none;
   /* padding: 1.5rem 0.5rem; */
@@ -108,31 +165,56 @@ const handle_submit = () => {
   font-weight: 700;
   padding: 0.4rem;
 }
-
 .card_container form {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  border: 1px solid #181818;
-  background: transparent;
-  border-radius: 8px;
-  padding: 4rem;
-  gap: 0.5rem;
+  justify-content: space-between;
+  align-items: center;
+  /* background: lime; */
+  height: 50vh;
+  width: 55%;
 }
 
+.card_container .form_wrap {
+  /* background: gold; */
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  /* flex-direction: column; */
+  justify-content: start;
+  align-items: center;
+  border: 1px solid #181818;
+  /* background: transparent; */
+  border-radius: 8px;
+  padding: 4rem;
+  gap: 0.6rem;
+  /* width:70%; */
+  height: 100%;
+}
+.card_container .form_wrap div {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-content: center;
+  /* background: blue; */
+}
 .card_container form label {
   font-size: 18px;
   text-transform: capitalize;
   font-weight: 700;
 }
-
-.card_container form input {
+.form_wrap select {
+  cursor: pointer;
+}
+.card_container form input,
+select {
   height: 30px;
   border-radius: 4px;
   border: none;
   padding: 1.5rem 0.5rem;
   font-size: 16px;
   background: #ececec;
+  width: 14em;
 }
 
 .card_container button {
@@ -140,7 +222,8 @@ const handle_submit = () => {
   border: none;
   border-radius: 6px;
   color: #f8f8f8;
-  padding: 1rem;
+  /* height: 30px; */
+  padding: 0.8rem;
   font-size: 18px;
   margin-top: 0.2rem;
   cursor: pointer;

@@ -9,6 +9,7 @@ import LandingPage from '../views/LandingPage.vue'
 import Type from '../components/Type.vue'
 import SubjectsFiles from '../components/SubjectsFiles.vue'
 import Subjects from '../views/Subjects.vue'
+import Dashboard from '../Admin/Dashboard.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -53,6 +54,11 @@ const router = createRouter({
       name: 'types',
       component: Subjects,
     },
+    {
+      path: '/admin/:id',
+      name: 'admin',
+      component: Dashboard,
+    }
   ]
 })
 

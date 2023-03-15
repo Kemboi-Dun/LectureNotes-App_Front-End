@@ -57,7 +57,13 @@ onMounted(()=>{
         <div class="search_bar">
             <input type="search" v-model="searchQuery" placeholder="Search...">
             <ul>
-      <li v-for="item in filteredItems" :key="item.ID">{{ item.Name }}</li>
+      <li v-for="item in filteredItems" :key="item.ID">
+        {{ item.AuthorName }}
+        <a :href= item.Path target="_blank">
+            {{ item.Name }}
+            <i class="fa-solid fa-download"></i>
+        </a>
+    </li>
     </ul>
         </div>
         <div class="auth_buttons">
