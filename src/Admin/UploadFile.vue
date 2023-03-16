@@ -117,7 +117,12 @@ onMounted(()=>{
         <input type="text" placeholder="BSCS,GUCC..." v-model="unitCode" required />
         <!-- Type -->
         <label for="type">Type</label>
-        <input type="text" placeholder="Notes,Article,PastPaper.." v-model="type" required />
+        <!-- <input type="text" placeholder="Notes,Article,PastPaper.." v-model="type" required /> -->
+        <select name="type" v-model="type" required>
+          <option value="Notes">Notes</option>
+          <option value="Past Paper">Past Paper</option>
+          <option value="Brochure">Brochure</option>
+        </select>
 
         <!-- FILE -->
         <!-- <label for="document">Doc</label> -->
