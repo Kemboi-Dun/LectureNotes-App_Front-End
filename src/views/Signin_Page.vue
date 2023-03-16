@@ -15,7 +15,7 @@ const user = ref('')
 const error = ref('')
 
 // POST USER ON SUBMIT
-const getserApi = () => {
+const postUserApi = () => {
   return getApi.post('/user', {
     Username: username.value,
     Role: role.value,
@@ -29,19 +29,18 @@ const handle_submit = () => {
   if (password.value !== confirmPassword.value) {
     error.value = 'Passwords do not match !'
   } else if (role.value === 'lecturer') {
-    getserApi().then((response) => {
+    postUserApi().then((response) => {
       console.log(response.data)
       user.value = response.data.user
       console.log(user.value.ID)
       localStorage.setItem('token', 123456789)
-    router.push({
-      name: 'admin',
-      params: {
-        id: user.value.School
-      }
+      router.push({
+        name: 'admin',
+        params: {
+          id: user.value.ID
+        }
+      })
     })
-    })
-
   } else {
     localStorage.setItem('token', 123456789)
     router.push({ name: 'home_page' })
@@ -86,7 +85,7 @@ const handle_submit = () => {
           <select name="school" class="select_cont" v-model="school" v-if="role == 'lecturer'">
             <option value="Business">SCHOOL OF BUSINESS</option>
             <option value="ComputerScience">SCHOOL OF COMPUTING AND INFORMATICS</option>
-            <option value="">SCHOOL OF EDUCATION</option>
+            <option value="Education">SCHOOL OF EDUCATION</option>
             <option value="Hospitality">SCHOOL OF HOSPITALITY AND TOURISM</option>
             <option value="Health">SCHOOL OF HEALTH</option>
             <option value="Library">DEPARTMENT OF LIBRARY AND INFORMATION SCIENCE</option>

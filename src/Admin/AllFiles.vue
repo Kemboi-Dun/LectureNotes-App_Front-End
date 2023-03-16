@@ -1,85 +1,84 @@
 <script setup>
-import AdminNav from './AdminNav.vue'
-import Footer from '../components/Footer.vue';
-import { ref,onMounted } from 'vue';
-import { getApi } from '../api/Api';
-import { useRouter,useRoute } from 'vue-router'
+import { ref, onMounted } from 'vue'
+import { getApi } from '../api/Api'
+import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
 const route = useRoute()
-const files = ref([]);
-const tokenExists  = ref(false);
-const filteredFiles = ref([]);
-const filteredParams = ref({
-  course_type_id: route.params.id
-})
+const tokenExists = ref(false)
+const users = ref([])
+const files = ref([])
+const filteredFiles = ref([])
 
-const getFilesApi = ()=>{
-    const url = '/files';
-    return getApi.get(url);
+// GET FILES FROM API
+const getFilesApi = async () => {
+  const url = '/files'
+  return await getApi.get(url)
+}
+//  GET USER FROM PARAM
+const getUserApi = async () => {
+  const id = route.params.id
+  return await getApi.get(`/user/${id}`)
 }
 
+onMounted(() => {
+  // CHECK FOR TOKEN BEFORE LOADING THE PAGE
+  tokenExists.value =
+    localStorage.getItem('token') !== null
+      ? console.log('Token exists..')
+      : router.push({ name: 'login' })
 
-const filteredFile = () => {
-  const { course_type_id } = filteredParams.value
+  getUserApi().then((response) => {
+    // console.log(response.data)
+    users.value = response.data.user
+    console.log(users.value.School)
+  })
 
-  console.log(files.value)
-  console.log('Response Files: ' + course_type_id)
-
-  return (filteredFiles.value = files.value.filter((item) => item.CourseName == course_type_id))
-}
-
-
-onMounted(()=>{
-    tokenExists.value = localStorage.getItem('token') !== null ? console.log("Token exists.."):  router.push({name:'login'})
-    getFilesApi()
-    .then((response)=>{
-        console.log(response.data.files);
-        files.value = response.data.files;
-        filteredFile()
-        console.log( filteredFiles.value )
-    })
+  getFilesApi().then((response) => {
+    // console.log(response.data.files)
+    files.value = response.data.files
+    console.log(files.value)
+    // Filter the array based on the type of the "Subject/CourseName" property
+    filteredFiles.value = files.value.filter((item) => item.CourseName == users.value.School)
+    console.log(filteredFiles.value)
+  })
 })
-
 </script>
 
-
 <template>
-    <div class="dashboard_container">
-        
-        <div class="dashboard_wrapper">
-            <table>
-    <thead>
-      <tr>
-          <th>Unit Code</th>
-        <th>Document Name</th>
-        <th>Semester</th>
-        <th>Course Type</th>
-        <th>Uploaded By</th>
-        <th> Date Updated</th>
-        <th>Download</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="item in filteredFiles" :key="item.ID">
-        <td>{{ item.UnitCode }}</td>
-        <td>{{ item.Name }}</td>
-        <td>{{ item.Semester }}</td>
-        <td>{{ item.CourseType }}</td>
-        <td>{{ item.AuthorName }}</td>
-        <td>{{ item.UpdatedAt }}</td>
-       
+  <div class="dashboard_container">
+    <div class="dashboard_wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Unit Code</th>
+            <th>Course Name</th>
+            <th>Document Name</th>
+            <th>Semester</th>
+            <th>Course Type</th>
+            <th>Uploaded By</th>
+            <th>Date Updated</th>
+            <th>Download</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in filteredFiles" :key="item.ID">
+            <td>{{ item.UnitCode }}</td>
+            <td>{{ item.CourseName }}</td>
+            <td>{{ item.Name }}</td>
+            <td>{{ item.Semester }}</td>
+            <td>{{ item.CourseType }}</td>
+            <td>{{ item.AuthorName }}</td>
+            <td>{{ item.UpdatedAt }}</td>
 
             <td>
-                <a :href=item.Path>
-                    <i class="fa-solid fa-download"></i>
-                </a>
+              <a :href="item.Path">
+                <i class="fa-solid fa-download"></i>
+              </a>
             </td>
-       
-      </tr>
-    </tbody>
-  </table>
-        </div>
-       
+          </tr>
+        </tbody>
+      </table>
     </div>
+  </div>
 </template>

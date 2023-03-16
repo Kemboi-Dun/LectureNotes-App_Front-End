@@ -7,8 +7,10 @@ import AllFiles from './AllFiles.vue';
 import UploadFile from './UploadFile.vue';
 import NotesAdmin from './NotesAdmin.vue'
 import Account from './Account.vue'
+import { useRouter } from 'vue-router';
 
-const tokenExists = ref(false)
+const router = useRouter();
+const tokenExists = ref(false);
 const showUploads = ref(false);
 const showAll = ref(true);
 const showArticles = ref(false);
