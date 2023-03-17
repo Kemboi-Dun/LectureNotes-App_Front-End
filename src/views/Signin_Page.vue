@@ -41,9 +41,17 @@ const handle_submit = () => {
         }
       })
     })
-  } else {
-    localStorage.setItem('token', 123456789)
-    router.push({ name: 'home_page' })
+  } else if(role.value === 'student') {
+    postUserApi().then((response) => {
+      console.log(response.data)
+      user.value = response.data.user
+      console.log(user.value.ID)
+      localStorage.setItem('token', 123456789)
+      router.push({ name: 'home_page' })
+    })
+
+    // localStorage.setItem('token', 123456789)
+    // router.push({ name: 'home_page' })
   }
   console.log(
     username.value,

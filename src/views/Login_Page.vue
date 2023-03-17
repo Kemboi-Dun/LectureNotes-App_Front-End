@@ -1,37 +1,80 @@
 <script setup>
-import { ref, reactive } from "vue";
+import { ref,onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { getApi } from "../api/Api";
 
-const log_in_data = reactive({
-    email: '',
-    password: '',
-});
+// const log_in_data = reactive({
+//     email: '',
+//     password: '',
+// });
 
-const allowedEmail = ref("john@gmail.com");
-const allowedPassword = ref("password");
+
+const selectedEmail = ref(null);
+const selectedPassword = ref(null)
+const allowedEmail = ref(null);
+const allowedPassword = ref(null);
+const verifiedUser = ref([]);
+const allowedRole = ref(null)
 
 const router = useRouter();
 const error = ref('');
+const user = ref([]);
+
+// get users from API 
+
+const getUsersApi = async()=>{
+    const url = '/users';
+    return await getApi.get(url);
+}
 
 
 const handle_submit = () => {
-    if (log_in_data.email === allowedEmail.value && log_in_data.password === allowedPassword.value) {
 
-        localStorage.setItem('token', 123456789)
-        router.push({
-            name: 'home_page',
-        });
-        console.log(log_in_data);
-        console.log(localStorage)
-    } else {
+   verifiedUser.value = user.value.filter((item) => item.Email == selectedEmail.value && item.Password == selectedPassword.value)
+console.log(verifiedUser.value[0].Username)
 
-        error.value = 'Invalid credentials!';
-        setTimeout(() => {
-            error.value = '';
-        }, 3000)
-        console.log(error.value);
-    }
+allowedEmail.value =verifiedUser.value[0].Email
+allowedPassword.value = verifiedUser.value[0].Password
+allowedRole.value = verifiedUser.value[0].Role
+ 
+if ( selectedEmail.value === allowedEmail.value && selectedPassword.value === allowedPassword.value) {
+
+localStorage.setItem('token', 123456789)
+if(allowedRole.value == "lecturer"){
+    router.push({
+    name: 'admin',
+    params: {
+          id: verifiedUser.value[0].ID
+        }
+});
+}else if(allowedRole.value == "student"){
+    router.push({
+    name: 'home_page',
+});
+}
+console.log(localStorage)
+console.log(allowedRole.value);
+
+} else {
+
+error.value = 'Invalid credentials!';
+setTimeout(() => {
+    error.value = '';
+}, 3000)
+console.log(error.value);
+}
+
 };
+
+
+onMounted(()=>{
+    getUsersApi()
+    .then((response)=>{
+        console.log(response.data.users);
+        user.value = response.data.users;
+    })
+})
+
 </script>
 
 <template>
@@ -46,17 +89,17 @@ const handle_submit = () => {
         </div>
         <form @submit.prevent="handle_submit">
             <label for="email">Email</label>
-            <input type="text" v-model="log_in_data.email" placeholder="johndoe@gmail.com" required />
+            <input type="text" v-model="selectedEmail" placeholder="johndoe@gmail.com" required />
 
             <label for="password">Password</label>
-            <input type="password" v-model="log_in_data.password" placeholder="Enter your password" required />
+            <input type="password" v-model="selectedPassword" placeholder="Enter your password" required />
 
             <div>
                 {{ error }}
 
             </div>
 
-            <button :disabled="!log_in_data.email && !log_in_data.password" type="submit">Log In</button>
+            <button :disabled="!selectedEmail && !selectedPassword" type="submit">Log In</button>
 
 
         </form>
