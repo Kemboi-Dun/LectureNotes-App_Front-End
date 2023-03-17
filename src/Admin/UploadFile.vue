@@ -27,6 +27,7 @@ const postFileApi = () =>{
         Year:new Date().getFullYear(),
         AuthorName: user.value.Username,
         CourseName: user.value.School,
+        AuthorID: user.value.ID,
     })
 }
 
@@ -67,7 +68,7 @@ onMounted(()=>{
     .then((response)=>{
         console.log(response.data.user);
         user.value = response.data.user;
-        console.log(user.value.Username);
+        console.log(user.value.ID);
     })
 })
 

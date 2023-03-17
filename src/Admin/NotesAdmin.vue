@@ -57,7 +57,7 @@ onMounted(() => {
     files.value = response.data.files
     console.log(files.value)
     // Filter the array based on the type of the "Subject/CourseName" property
-    filteredFiles.value = files.value.filter((item) => item.AuthorName == users.value.Username)
+    filteredFiles.value = files.value.filter((item) => item.AuthorID == users.value.ID)
     console.log(filteredFiles.value)
   })
 //   deleteFile()

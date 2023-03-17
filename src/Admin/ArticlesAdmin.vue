@@ -1,18 +1,35 @@
 <script setup>
 import { ref, onMounted } from "vue"
 import { getApi } from '../api/Api';
+import { useRoute } from 'vue-router';
 
+const route = useRoute();
+const tag = ref('');
+const title = ref('');
 const authorName = ref('');
 const newArticleText = ref('');
-const Articles = ref([]);
+const articles = ref([]);
+const user = ref(null);
+const filteredArticles = ref([]);
+
+
+// GET USER
+
+const getUserApi = async ()=>{
+    const id = route.params.id;
+    return await getApi.get(`/user/${id}`);
+}
+
 
 // GET Articles
-const fetchArticles = () => {
-    const url = '/Articles';
-    getApi.get(url)
+const fetchArticles = async () => {
+    const url = '/articles';
+    await getApi.get(url)
         .then((response) => {
             console.log(response.data);
-            Articles.value = response.data.Articles;
+            articles.value = response.data.articles;
+            filteredArticles.value = articles.value.filter((item) => item.AuthorID == user.value.ID)
+    console.log(filteredArticles.value)
         })
         .catch((error) => {
             console.log(error)
@@ -20,64 +37,93 @@ const fetchArticles = () => {
 };
 
 // ADD article
-const addArticle = () => {
+const addArticle = async () => {
     const url = '/article';
-    getApi.post(url, {
-        AuthorName: authorName.value,
+   await getApi.post(url, {
+        AuthorID: user.value.ID,
+        Tag: tag.value,
+        Title: title.value,
+        AuthorName: user.value.Username,
         Body: newArticleText.value,
     })
         .then((response) => {
-            Articles.value.push(response.data);
+            articles.value.push(response.data);
+            tag.value = '';
+            title.value = '';
             authorName.value = '';
             newArticleText.value = '';
+            // articles.value = articles.value.filter(article => article.ID !== articleId);
         })
         .catch((error) => {
             console.log(error)
         });
 }
 // DELETE article
-const deleteArticle = (articleId) => {
+const deleteArticle = async (articleId) => {
     const url = `/article/${articleId}`;
-    getApi.delete(url)
+   await getApi.delete(url)
         .then((response) => {
             console.log(response.data);
-            Articles.value = Articles.value.filter(article => article.ID !== articleId);
+            articles.value = articles.value.filter(article => article.ID !== articleId);
 
         })
         .catch((error) => {
             console.log(error)
         });
 }
-onMounted(() => {
-    fetchArticles()
+
+
+
+// watch(filteredArticles.value,{
+// filteredArticles.value
+// })
+
+
+onMounted( async () => {
+   await getUserApi()
+    .then((response)=>{
+        console.log(response.data.user);
+        user.value = response.data.user;
+        console.log(user.value.ID)
+    })
+
+
+   await fetchArticles()
 })
 </script>
 
 <template>
     <div class="article_container">
 
-        <h2>Articles ({{ Articles.length }})</h2>
+        <h2>Articles ({{ filteredArticles.length }})</h2>
 
         <div class="articles_wrapper">
 
             <ul>
-            <li v-for="article in Articles" :key="article.ID">
-                <!-- <p>{{ article.AuthorName }}</p> -->
+            <li v-for="article in filteredArticles" :key="article.ID">
+                <span>{{ article.Tag }}</span>
+                <span>{{ article.Title }}</span>
+                <p>{{ article.AuthorName }}</p>
+                <span>{{ article.UpdatedAt }}</span>
                 <span>{{ article.Body }}</span>
                 <div @click="deleteArticle(article.ID)"><i class="fa-solid fa-trash"></i></div>
             </li>
         </ul>
         </div>
       
-        <form @submit="addArticle">
-            <!-- <input type="text" v-model="authorName"> -->
-            <label for="article">Write a article</label>
-            <textarea v-model="newArticleText" cols="8" rows="4" placeholder="Write your article here.."></textarea>
-            <div>
+                <form @submit="addArticle">
+                
+                    <label for="title">Title:</label>
+                    <input type="text" v-model="title">
+                    <label for="article">Write a article</label>
+                    <textarea v-model="newArticleText" cols="8" rows="4" placeholder="Write your article here.."></textarea>
+                    <label for="tag">Tag:</label>
+                    <input type="text" placeholder="Security, food.." v-model="tag">
+                    <div>
 
-                <button type="submit">Add article</button>
-            </div>
-        </form>
+                        <button type="submit">Add article</button>
+                    </div>
+                </form>
     </div>
 </template>
 <style scoped>
@@ -89,7 +135,7 @@ onMounted(() => {
     position: relative;
 }
 .article_container h2{
-    position: fixed;
+    /* position: fixed; */
     background: #f8f8f8;
     padding: 0.5em;
   
@@ -130,14 +176,14 @@ onMounted(() => {
 
 }
 .article_container form textarea{
-border:none;
+/* border:none; */
 border-radius: 6px;
 padding: 1em;
 font-size: 16px;
 outline: none;
 }
 .article_container form button{
-    border: none;
+    /* border: none; */
     background: #f8f8f8;
     color: #181818;
     padding: 0.6em 2em;
