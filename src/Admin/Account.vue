@@ -66,7 +66,18 @@ onMounted(()=>{
 <label for="username">Username: </label>
 <input type="text" v-model="updateUsername" >
 <label for="school">School: </label>
-<input type="text" v-model="updateSchool" >
+<!-- <input type="text" v-model="updateSchool" > -->
+<select name="school" class="select_cont" v-model="updateSchool">
+            <option value="Business">SCHOOL OF BUSINESS</option>
+            <option value="ComputerScience">SCHOOL OF COMPUTING AND INFORMATICS</option>
+            <option value="Education">SCHOOL OF EDUCATION</option>
+            <option value="Hospitality">SCHOOL OF HOSPITALITY AND TOURISM</option>
+            <option value="Health">SCHOOL OF HEALTH</option>
+            <option value="Library">DEPARTMENT OF LIBRARY AND INFORMATION SCIENCE</option>
+            <option value="Humanities">SCHOOL OF HUMANITIES AND SOCIAL SCIENCES</option>
+            <option value="Kasneb">KASNEB COURSES</option>
+            <option value="Knec">KNEC COURSES</option>
+          </select>
 <!-- <label for="R">Username: </label> -->
 <label for="email">Email: </label>
 <input type="email" v-model="updateEmail" >
