@@ -1,16 +1,16 @@
 
 <script setup>
 import {ref, onMounted} from 'vue'
-import { getApi } from '../api/ArticleApi';
+import { getApi } from '../api/Api';
 const articles = ref([])
 
-const getArticlesApi = () =>{
-    // const url = '/'
-    return getApi.get()
+const getArticlesApi = async() =>{
+    const url = '/articles'
+    return await getApi.get(url)
 }
 
-onMounted(()=>{
-    getArticlesApi()
+onMounted( async()=>{
+    await getArticlesApi()
     .then((response)=>{
         console.log(response.data.articles)
         articles.value = response.data.articles
@@ -27,19 +27,20 @@ onMounted(()=>{
     <div class="articles_container">
        
         <div class="articles_wrapper" v-for="article in articles" :key="article.id">
-            <a :href= article.url target="_blank">
+            <span>{{ article.Tag }}</span>
+            <a href= "" target="_blank">
                 <div class="title">
                     <!-- {{ article.url}} -->
-{{article.title }}
+{{article.Title }}
 </div>
             </a>
           
             <div class="author_date">
-                {{ article.author }}
-                {{ article.publishedAt }}
+                {{ article.AuthorName }}
+                {{ article.UpdatedAt }}
             </div>
             <div class="description">
-                {{ article.description }}
+                {{ article.Body }}
             </div>
         </div>
     </div>
