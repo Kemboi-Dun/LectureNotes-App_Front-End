@@ -132,7 +132,7 @@ onMounted( async () => {
     width:90%;
     margin: auto;
     padding: 0 2em;
-    position: relative;
+    /* position: relative; */
 }
 .article_container h2{
     /* position: fixed; */

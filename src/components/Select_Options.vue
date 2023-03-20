@@ -1,8 +1,9 @@
 <script setup>
 import { ref,onMounted } from "vue";
-import {useRouter} from 'vue-router';
+import {useRouter,useRoute} from 'vue-router';
 import {getApi} from '../api/Api';
 const router = useRouter();
+const route = useRoute();
 
 const years = ref([]);
 // const isYearsLoading = ref(false);
@@ -23,12 +24,17 @@ const filteredCourseType = ref([]);
 const filteredCourseName = ref([]);
 const filteredSemester = ref([]);
 
+const users = ref([]);
+
 
 
 
 const message = ref('');
 
-
+const getUserApi = async () => {
+  const id = route.params.id
+  return await getApi.get(`/user/${id}`)
+}
 
 // FETCH FILES DATA FROM API
 const getFilesApi = ()=>{
@@ -42,6 +48,7 @@ const redirectToUnitsPage = () =>{
       router.push({
         name: 'units',
         params:{
+          id : route.params.id,
             year_id: selectedYearId.value,
             course_id: selectedCourseId.value,
             course_type_id: selectedCourseTypeId.value,
@@ -56,10 +63,16 @@ const redirectToUnitsPage = () =>{
 
 onMounted(()=>{
 
+  getUserApi().then((response) => {
+    // console.log(response.data)
+    users.value = response.data.user
+    console.log(users.value.Username)
+  })
+
   getFilesApi()
   .then((response)=>{
-    console.log(response.data.files);
-files.value = response.data.files;
+    console.log(response.data.documents);
+files.value = response.data.documents;
 
  // Filter the array based on "YEAR" property
  filteredYears.value = files.value.filter(
@@ -93,6 +106,8 @@ files.value = response.data.files;
   })
 
 
+
+  
 })
 
 </script>

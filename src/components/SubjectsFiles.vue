@@ -30,8 +30,8 @@ const filteredType = () => {
 
 onMounted(() => {
   getTypesApi().then((response) => {
-    console.log(response.data.files)
-    typeFiles.value = response.data.files
+    console.log(response.data.documents)
+    typeFiles.value = response.data.documents
     filteredType()
     console.log(filteredTypes.value)
   })

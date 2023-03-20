@@ -10,6 +10,7 @@ import Type from '../components/Type.vue'
 import SubjectsFiles from '../components/SubjectsFiles.vue'
 import Subjects from '../views/Subjects.vue'
 import Dashboard from '../Admin/Dashboard.vue'
+import File from '../views/File.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -20,22 +21,22 @@ const router = createRouter({
       component: LandingPage
     },
     {
-      path: '/home',
+      path: '/home/:id',
       name: 'home_page',
       component: HomeView
     },
     {
-      path: '/year/:year_id/course/:course_id/course_type/:course_type_id/semester/:semester_id/units',
+      path: '/:id/year/:year_id/course/:course_id/course_type/:course_type_id/semester/:semester_id/units',
       name: 'units',
       component: Units_Page,
     },
     {
-      path: '/year/:year_id/course/:course_id/course_type/:course_type_id/semester/:semester_id/units/:unit_id/folders',
+      path: '/:id/year/:year_id/course/:course_id/course_type/:course_type_id/semester/:semester_id/units/:unit_id/folders',
       name: 'folders',
       component: Folders_Page,
     },
     {
-      path: '/year/:year_id/course/:course_id/course_type/:course_type_id/semester/:semester_id/units/:unit_id/folders/:folder_id/documents',
+      path: '/:id/year/:year_id/course/:course_id/course_type/:course_type_id/semester/:semester_id/units/:unit_id/folders/:folder_id/documents',
       name: 'documents',
       component: Documents_Page,
     },

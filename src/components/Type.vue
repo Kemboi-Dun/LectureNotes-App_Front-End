@@ -51,8 +51,8 @@ const redirectToType = (file) =>{
 onMounted(() => {
   getSubjectsApi()
     .then((response) => {
-      console.log(response.data.files)
-      files.value = response.data.files
+      console.log(response.data.documents)
+      files.value = response.data.documents
 
       // Filter the array based on the type of the "Subject/CourseName" property
       filteredSubjects.value = files.value.filter(

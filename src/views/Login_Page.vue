@@ -50,6 +50,9 @@ if(allowedRole.value == "lecturer"){
 }else if(allowedRole.value == "student"){
     router.push({
     name: 'home_page',
+    params: {
+          id: verifiedUser.value[0].ID
+        }
 });
 }
 console.log(localStorage)

@@ -12,16 +12,28 @@ const message = ref('')
 const units = ref([])
 const filteredUnit = ref([])
 const filteredParams = ref({
+  // studentId : route.params.id,
   year_id: route.params.year_id,
   course_type_id: route.params.course_type_id,
   course_id: route.params.course_id,
   semester_id: route.params.semester_id
 })
 
+
+
+const users = ref([]);
+
+const getUserApi = async () => {
+  const id = route.params.id
+  console.log(id);
+  return await getApi.get(`/user/${id}`)
+}
+
 const redirect_to_folders = (unit_id) => {
   router.push({
     name: 'folders',
     params: {
+      studentId : route.params.id,
       year_id: route.params.year_id,
       course_type_id: route.params.course_type_id,
       course_id: route.params.course_id,
@@ -33,37 +45,42 @@ const redirect_to_folders = (unit_id) => {
 
 const loadFoldersApi = () => {
   const url = '/files'
-  return getApi.get(url)}
-
-// const loadFoldersApi = () => {
-//   const url = '/files'
-//   return getApi.get(url, {
-//     params: {
-//       year_id: route.params.year_id,
-//       course_type_id: route.params.course_type_id,
-//       course_id: route.params.course_id,
-//       semester_id: route.params.semester_id,
-//       unit_id: route.params.unit_id
-//     }
-//   })
-// }
+  return getApi.get(url)
+}
 
 const filteredUnits = () => {
-  const { year_id,course_type_id,course_id,semester_id } = filteredParams.value
+  const { year_id, course_type_id, course_id, semester_id } = filteredParams.value
 
   console.log(units.value)
-  console.log('Year:' + year_id, "Course Type:" + course_type_id, "Course:" + course_id, "Semester:" + semester_id )
+  console.log(
+    'Year:' + year_id,
+    'Course Type:' + course_type_id,
+    'Course:' + course_id,
+    'Semester:' + semester_id
+  )
 
-  return filteredUnit.value = units.value.filter((item) => item.Year == year_id && item.CourseType == course_type_id && item.CourseName == course_id && item.Semester == semester_id)
+  return (filteredUnit.value = units.value.filter(
+    (item) =>
+      item.Year == year_id &&
+      item.CourseType == course_type_id &&
+      item.CourseName == course_id &&
+      item.Semester == semester_id
+  ))
 }
 
 onMounted(() => {
   console.log('Start Loader...')
 
+  getUserApi().then((response) => {
+    console.log(response.data)
+    users.value = response.data.user
+    console.log(users.value.ID)
+  })
+
   loadFoldersApi()
     .then((response) => {
-      console.log(response.data.files)
-      units.value = response.data.files
+      console.log(response.data.documents)
+      units.value = response.data.documents
       filteredUnits()
 
       console.log(filteredUnit.value)

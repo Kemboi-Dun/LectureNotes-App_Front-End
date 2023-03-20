@@ -34,7 +34,7 @@ const filteredItems = computed(() => {
 onMounted(()=>{
     getFilesApi()
     .then((response)=>{
-        files.value = response.data.files;
+        files.value = response.data.documents;
         console.log(files.value);
         // filteredItems()
         console.log(filteredItems.value);

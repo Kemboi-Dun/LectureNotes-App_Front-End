@@ -4,15 +4,29 @@ import Select_Options from '../components/Select_Options.vue';
 import CommentsPage from '../views/CommentsPage.vue'
 import Footer from '../components/Footer.vue';
 import { onMounted, ref } from 'vue';
-import {useRouter} from 'vue-router';
+import {useRouter,useRoute} from 'vue-router';
 import Type from '../components/Type.vue';
+import { getApi } from '../api/Api';
 
 const tokenExists  = ref(false);
 const router = useRouter();
+const users = ref([]);
+const route = useRoute()
 
+const getUserApi = async () => {
+  const id = route.params.id
+  return await getApi.get(`/user/${id}`)
+}
 
 onMounted(()=>{
     tokenExists.value = localStorage.getItem('token') !== null ? console.log("Token exists.."):  router.push({name:'login'})
+
+    getUserApi().then((response) => {
+    // console.log(response.data)
+    users.value = response.data.user
+    console.log(users.value)
+  })
+
 })
 
 </script>

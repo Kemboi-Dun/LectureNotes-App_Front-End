@@ -36,7 +36,7 @@ onMounted( async() => {
 
   await getFilesApi().then((response) => {
     // console.log(response.data.files)
-    files.value = response.data.files
+    files.value = response.data.documents
     console.log(files.value)
     // Filter the array based on the type of the "Subject/CourseName" property
     filteredFiles.value = files.value.filter((item) => item.CourseName == users.value.School)

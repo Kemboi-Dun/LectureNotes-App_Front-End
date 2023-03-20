@@ -1,10 +1,16 @@
 <script setup>
 import { ref, onMounted } from "vue"
+import { useRoute } from "vue-router";
 import { getApi } from '../api/Api';
 
 const authorName = ref('');
 const newCommentText = ref('');
 const comments = ref([]);
+const users = ref([]);
+const author = ref(false);
+const route = useRoute();
+const filteredComments = ref([]);
+const filteredComment = ref([]);
 
 // GET COMMENTS
 const fetchComments = () => {
@@ -13,11 +19,35 @@ const fetchComments = () => {
         .then((response) => {
             console.log(response.data);
             comments.value = response.data.comments;
+            console.log(comments.value)
+
+             // Filter the array based on the type of the "Subject/CourseName" property
+             filteredComments.value = comments.value.filter((item) =>
+                   item.AuthorID !== users.value.ID,
+                   author.value=false
+                   )
+
+
+
+                // Filter the array based on the type of the "Subject/CourseName" property
+                filteredComment.value = comments.value.filter((item) =>
+                   item.AuthorID === users.value.ID,
+                   author.value=true
+                   )
+                   console.log( filteredComment.value)
         })
         .catch((error) => {
             console.log(error)
         });
 };
+
+
+const getUserApi = async () => {
+  const id = route.params.id
+  console.log(id);
+  return await getApi.get(`/user/${id}`)
+}
+
 
 // ADD COMMENT
 const addComment = () => {
@@ -25,8 +55,10 @@ const addComment = () => {
     getApi.post(url, {
         AuthorName: authorName.value,
         Body: newCommentText.value,
+        AuthorID: users.value.ID,
     })
         .then((response) => {
+            // console.log(response.data)
             comments.value.push(response.data);
             authorName.value = '';
             newCommentText.value = '';
@@ -36,9 +68,10 @@ const addComment = () => {
         });
 }
 // DELETE COMMENT
-const deleteComment = (commentId) => {
+const deleteComment = async (commentId) => {
+    // author.value = true;
     const url = `/comment/${commentId}`;
-    getApi.delete(url)
+  await  getApi.delete(url)
         .then((response) => {
             console.log(response.data);
             comments.value = comments.value.filter(comment => comment.ID !== commentId);
@@ -48,8 +81,18 @@ const deleteComment = (commentId) => {
             console.log(error)
         });
 }
-onMounted(() => {
-    fetchComments()
+onMounted( async() => {
+     await getUserApi().then((response) => {
+    console.log(response.data)
+    users.value = response.data.user
+    console.log(users.value.ID)
+    authorName.value =users.value.Username;
+    console.log(authorName.value)
+  })
+
+     fetchComments()
+
+
 })
 </script>
 
@@ -61,10 +104,19 @@ onMounted(() => {
         <div class="comments_wrapper">
 
             <ul>
-            <li v-for="comment in comments" :key="comment.ID">
-                <!-- <p>{{ comment.AuthorName }}</p> -->
+                <li v-for="comment in filteredComments" :key="comment.ID">
+                
+                <p>{{ comment.AuthorName }}</p>
+                <!-- <p>{{ comment.UpdatedAt }}</p> -->
                 <span>{{ comment.Body }}</span>
-                <div @click="deleteComment(comment.ID)"><i class="fa-solid fa-trash"></i></div>
+           
+            </li>
+            <li v-for="comment in filteredComment" :key="comment.ID">
+                
+                <p>{{ comment.AuthorName }}</p>
+                <!-- <p>{{ comment.UpdatedAt }}</p> -->
+                <span>{{ comment.Body }}</span>
+                <div v-if="author" @click="deleteComment(comment.ID)"><i class="fa-solid fa-trash"></i></div>
             </li>
         </ul>
         </div>
@@ -117,6 +169,9 @@ onMounted(() => {
 }
 .comments_wrapper span{
     margin: 1em 0;
+}
+.comments_wrapper p{
+    font-weight: 700;
 }
 .comments_wrapper i{
     padding:0.6em 2em;

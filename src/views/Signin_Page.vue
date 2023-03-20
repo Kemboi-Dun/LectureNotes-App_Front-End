@@ -47,7 +47,10 @@ const handle_submit = () => {
       user.value = response.data.user
       console.log(user.value.ID)
       localStorage.setItem('token', 123456789)
-      router.push({ name: 'home_page' })
+      router.push({ name: 'home_page',
+      params: {
+          id: user.value.ID
+        } })
     })
 
     // localStorage.setItem('token', 123456789)

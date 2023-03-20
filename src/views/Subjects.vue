@@ -1,19 +1,17 @@
 <script setup>
 import axios from 'axios'
 import { ref, onMounted } from 'vue'
-// import CommentsPage from './CommentsPage.vue'
-import { RouterLink,useRoute } from 'vue-router'
+import { RouterLink, useRoute } from 'vue-router'
 import Navbar from '../components/Navbar.vue'
 import Footer from '../components/Footer.vue'
 import { getApi } from '../api/Api'
-import Type from '../components/Type.vue'
 import ArticlesPage from '../components/ArticlesPage.vue'
 
-const filesrcs = ref([]);
-const route = useRoute();
+const filesrcs = ref([])
+const route = useRoute()
 const filteredDocuments = ref([])
 const filteredParams = ref({
-    course_type_id: route.params.type,
+  course_type_id: route.params.type
 })
 
 const getDocApi = () => {
@@ -22,20 +20,25 @@ const getDocApi = () => {
 }
 
 const filtereDocuments = () => {
-  const { course_type_id} = filteredParams.value
+  const { course_type_id } = filteredParams.value
 
   console.log(course_type_id)
-  console.log("Course Type:" + course_type_id  )
+  console.log('Course Type:' + course_type_id)
 
-  return filteredDocuments.value = filesrcs.value.filter((item) =>  item.CourseName == course_type_id ||  item.AuthorName == course_type_id ||  item.Type == course_type_id ||  item.Year == course_type_id)
+  return (filteredDocuments.value = filesrcs.value.filter(
+    (item) =>
+      item.CourseName == course_type_id ||
+      item.AuthorName == course_type_id ||
+      item.Type == course_type_id ||
+      item.Year == course_type_id
+  ))
 }
-
 
 const getFile = () => {
   getDocApi()
     .then((response) => {
       console.log(response.data)
-      filesrcs.value = response.data.files
+      filesrcs.value = response.data.documents
       filtereDocuments()
       console.log(filteredDocuments.value)
     })
@@ -43,30 +46,50 @@ const getFile = () => {
       console.log('An Error occured while fetching documents..')
     })
 }
-const forceFileDownload = (response, item) => {
-  var headers = response.headers
-  var extension = item.Path.substring(item.Path.lastIndexOf('.') + 1)
-  var blob = new Blob([response.data], { type: headers['content-type'] })
-  var link = document.createElement('a')
-  link.href = window.URL.createObjectURL(blob)
-  link.download = `${item.name}.${extension}`
-  link.click()
-  link.remove()
-}
 
-const downloadFile = (item) => {
-  axios({
-    method: 'get',
-    url: item.Path,
-    responseType: 'blob'
-  })
-    .then((response) => {
-      forceFileDownload(response, item)
-    })
-    .catch(() => {
-      console.log('An error occured....')
-    })
-}
+
+const downloadFile = async(fileId)=> {
+  await fetch(`/DOC_DOWNLOAD/${fileId}`)
+        .then(response => response.blob())
+        .then(blob => {
+          const url = window.URL.createObjectURL(new Blob([blob]));
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = fileId;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        })
+        .catch(error => {
+          console.log("CAN NOT DOWNLOAD FILE..")
+          console.error(error);
+        });
+    }
+
+// const forceFileDownload = (response, item) => {
+//   var headers = response.headers
+//   var extension = item.Path.substring(item.Path.lastIndexOf('.') + 1)
+//   var blob = new Blob([response.data], { type: headers['content-type'] })
+//   var link = document.createElement('a')
+//   link.href = window.URL.createObjectURL(blob)
+//   link.download = `${item.name}.${extension}`
+//   link.click()
+//   link.remove()
+// }
+
+// const downloadFile = (item) => {
+//   axios({
+//     method: 'get',
+//     url: item.Path,
+//     responseType: 'blob'
+//   })
+//     .then((response) => {
+//       forceFileDownload(response, item)
+//     })
+//     .catch(() => {
+//       console.log('An error occured....')
+//     })
+// }
 onMounted(() => {
   getFile()
 })
@@ -83,8 +106,12 @@ onMounted(() => {
       <div class="downloads_wrapper">
         <div class="download_wrapper">
           <ol>
-            <li class="download_cont_wrapper" v-for="(filesrc, index) in filteredDocuments" :key="index">
-              <div @click.prevent="downloadFile(filesrc)">
+            <li
+              class="download_cont_wrapper"
+              v-for="(filesrc, index) in filteredDocuments"
+              :key="index"
+            >
+              <div @click.prevent="downloadFile(filesrc.Path)">
                 <a :href="filesrc.Path" target="_blank" class="download_doc">
                   <span>
                     {{ filesrc.Name }}
@@ -96,10 +123,9 @@ onMounted(() => {
           </ol>
         </div>
       </div>
-     
 
-          <ArticlesPage class="comments_cont" />
-      
+      <ArticlesPage class="comments_cont" />
+
       <!-- <Type class="comments_cont" /> -->
     </div>
 
