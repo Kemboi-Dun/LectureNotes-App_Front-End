@@ -18,20 +18,19 @@ const filteredParams = ref({
   semester_id: route.params.semester_id,
   unit_id: route.params.unit_id
 })
-const users = ref([]);
+const users = ref([])
 
 const getUserApi = async () => {
   const id = route.params.id
-  console.log(id);
+  console.log(id)
   return await getApi.get(`/user/${id}`)
 }
-
 
 const redirect_to_document = (folder_id) => {
   router.push({
     name: 'documents',
     params: {
-      studentId : route.params.id,
+      studentId: route.params.id,
       year_id: route.params.year_id,
       course_type_id: route.params.course_type_id,
       course_id: route.params.course_id,
@@ -45,20 +44,6 @@ const loadDocumentsApi = () => {
   const url = '/files'
   return getApi.get(url)
 }
-
-// const loadDocumentsApi = () => {
-//    const url = "/files";
-//    return getApi.get(url, {
-//       params: {
-//          year_id: route.params.year_id,
-//          course_type_id: route.params.course_type_id,
-//          course_id: route.params.course_id,
-//          semester_id: route.params.semester_id,
-//          unit_id: route.params.unit_id,
-//          folder_id: route.params.folder_id,
-//       }
-//    })
-// }
 
 const filteredFolders = () => {
   const { year_id, course_type_id, course_id, semester_id, unit_id } = filteredParams.value
@@ -85,13 +70,11 @@ const filteredFolders = () => {
 onMounted(() => {
   console.log('Start Loader...')
 
-    getUserApi().then((response) => {
+  getUserApi().then((response) => {
     console.log(response.data)
     users.value = response.data.user
     console.log(users.value.ID)
   })
-
-
 
   loadDocumentsApi()
     .then((response) => {

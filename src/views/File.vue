@@ -1,49 +1,45 @@
-
 <template>
   <div>
     <div v-for="message in messages" :key="message.id">
       {{ message }}
     </div>
     <form @submit.prevent="sendMessage">
-      <input type="text" v-model="messageText">
+      <input type="text" v-model="messageText" />
       <button type="submit">Send</button>
     </form>
   </div>
 </template>
 
 <script>
-import io from "socket.io-client";
+import io from 'socket.io-client'
 
 export default {
   data() {
     return {
       socket: null,
       messages: [],
-      messageText: "",
-    };
+      messageText: ''
+    }
   },
   mounted() {
     // Connect to chat server using WebSocket
-    this.socket = io("ws://localhost:3000/chat");
+    this.socket = io('ws://localhost:3000/chat')
     // Handle incoming messages
-    this.socket.on("message", (message) => {
-      this.messages.push(message);
-    });
+    this.socket.on('message', (message) => {
+      this.messages.push(message)
+    })
   },
   methods: {
     sendMessage() {
       // Send message to chat server
-      this.socket.emit("message", this.messageText);
-      this.messageText = "";
+      this.socket.emit('message', this.messageText)
+      this.messageText = ''
 
       console.log(this.messageText)
-    },
-  },
-};
+    }
+  }
+}
 </script>
-
-
-
 
 <!-- <script setup>
 import { onMounted, ref } from 'vue';

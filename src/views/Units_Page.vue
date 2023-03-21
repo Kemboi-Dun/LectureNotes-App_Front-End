@@ -19,13 +19,11 @@ const filteredParams = ref({
   semester_id: route.params.semester_id
 })
 
-
-
-const users = ref([]);
+const users = ref([])
 
 const getUserApi = async () => {
   const id = route.params.id
-  console.log(id);
+  console.log(id)
   return await getApi.get(`/user/${id}`)
 }
 
@@ -33,7 +31,7 @@ const redirect_to_folders = (unit_id) => {
   router.push({
     name: 'folders',
     params: {
-      studentId : route.params.id,
+      studentId: route.params.id,
       year_id: route.params.year_id,
       course_type_id: route.params.course_type_id,
       course_id: route.params.course_id,

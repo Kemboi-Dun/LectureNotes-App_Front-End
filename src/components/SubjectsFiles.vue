@@ -1,7 +1,7 @@
 <script setup>
 import { getApi } from '../api/Api.js'
 import { ref, onMounted } from 'vue'
-import { useRoute,RouterLink } from 'vue-router'
+import { useRoute, RouterLink } from 'vue-router'
 import Navbar from './Navbar.vue'
 import Footer from './Footer.vue'
 import Type from './Type.vue'

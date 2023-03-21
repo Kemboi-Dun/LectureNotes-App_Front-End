@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { getApi } from '../api/Api.js'
-import router from '../router';
+import router from '../router'
 
 const files = ref([])
 const filteredSubjects = ref([])
@@ -19,34 +19,29 @@ const getSubjectsApi = () => {
   return getApi.get(url)
 }
 
-const showSubject = () =>{
-  showSubjects.value = !showSubjects.value;
+const showSubject = () => {
+  showSubjects.value = !showSubjects.value
 }
-const showAuthor = () =>{
-  showAuthors.value = !showAuthors.value;
+const showAuthor = () => {
+  showAuthors.value = !showAuthors.value
 }
-const showType = () =>{
-  showTypes.value = !showTypes.value;
+const showType = () => {
+  showTypes.value = !showTypes.value
 }
-const showDate = () =>{
-  showDates.value = !showDates.value;
+const showDate = () => {
+  showDates.value = !showDates.value
 }
 
-const redirectToType = (file) =>{
+const redirectToType = (file) => {
   console.log(filteredTypes.value)
-  // router.push({path: `/types_page/${file.Type}` 
+  // router.push({path: `/types_page/${file.Type}`
   router.push({
     name: 'types',
-    params:{
-
-      type: file,
+    params: {
+      type: file
     }
   })
-  
 }
-
-
-
 
 onMounted(() => {
   getSubjectsApi()
@@ -87,19 +82,16 @@ onMounted(() => {
 <template>
   <div class="type_container">
     <div class="type_title">
-
-<h1>Browse</h1>
-</div>
+      <h1>Browse</h1>
+    </div>
     <div class="type_wrapper">
-   
       <div class="info">
         <label for="desc">
           <input name="desc" type="checkbox" v-model="showSubjects" />
           <span>
-          <p @click="showSubject">Subjects( {{ filteredSubjects.length }})</p>
+            <p @click="showSubject">Subjects( {{ filteredSubjects.length }})</p>
           </span>
         </label>
-   
 
         <div
           class="desc_cont"
@@ -108,9 +100,9 @@ onMounted(() => {
           v-if="showSubjects"
           @click="redirectToType(file.CourseName)"
         >
-        <span>
-          {{ file.CourseName }}
-        </span>
+          <span>
+            {{ file.CourseName }}
+          </span>
         </div>
       </div>
 
@@ -118,11 +110,10 @@ onMounted(() => {
         <label for="desc">
           <input name="desc" type="checkbox" v-model="showAuthors" />
           <span>
-
-            <p @click="showAuthor" >Authors/Lecturers ({{ filteredAuthors.length }})</p>
+            <p @click="showAuthor">Authors/Lecturers ({{ filteredAuthors.length }})</p>
           </span>
         </label>
-      
+
         <div
           class="desc_cont"
           v-for="file in filteredAuthors"
@@ -130,24 +121,27 @@ onMounted(() => {
           v-if="showAuthors"
           @click="redirectToType(file.AuthorName)"
         >
-        <span>
-          {{ file.AuthorName }}
-        </span>
+          <span>
+            {{ file.AuthorName }}
+          </span>
         </div>
       </div>
 
       <div class="info">
         <label for="desc">
-            <input name="desc" type="checkbox" v-model="showTypes" />
-            <span>
-
-              <p @click="showType">Type(s) ({{ filteredTypes.length }})</p>
-            </span>
+          <input name="desc" type="checkbox" v-model="showTypes" />
+          <span>
+            <p @click="showType">Type(s) ({{ filteredTypes.length }})</p>
+          </span>
         </label>
-       
 
-        <div  class="desc_cont" v-for="file in filteredTypes" :key="file.ID" v-if="showTypes" @click="redirectToType(file.Type)">
-
+        <div
+          class="desc_cont"
+          v-for="file in filteredTypes"
+          :key="file.ID"
+          v-if="showTypes"
+          @click="redirectToType(file.Type)"
+        >
           <span>
             {{ file.Type }}
           </span>
@@ -156,22 +150,22 @@ onMounted(() => {
 
       <div class="info">
         <label for="desc">
-            <input name="desc" type="checkbox" v-model="showDates" />
-            <span>
-          <p @click="showDate">Date(s) ({{ filteredDates.length }})</p>
+          <input name="desc" type="checkbox" v-model="showDates" />
+          <span>
+            <p @click="showDate">Date(s) ({{ filteredDates.length }})</p>
           </span>
         </label>
-     
 
-        <div class="desc_cont" v-for="file in filteredDates" :key="file.ID" v-if="showDates" @click="redirectToType(file.Year)">
-          
-
-<span>
-
-  {{ file.Year }}
-</span>
-
-          
+        <div
+          class="desc_cont"
+          v-for="file in filteredDates"
+          :key="file.ID"
+          v-if="showDates"
+          @click="redirectToType(file.Year)"
+        >
+          <span>
+            {{ file.Year }}
+          </span>
         </div>
       </div>
     </div>
@@ -179,43 +173,42 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.desc_cont span, .info span{
+.desc_cont span,
+.info span {
   /* color:blue; */
   text-decoration: underline;
   cursor: pointer;
 }
-.type_container{
-    position: fixed;
-    top: 0;
+.type_container {
+  position: fixed;
+  top: 0;
   left: 0;
-  border:1px solid #212121;
+  border: 1px solid #212121;
   border-radius: 6px;
 }
-.type_wrapper{
-    position: relative;
-    height: 100%;
+.type_wrapper {
+  position: relative;
+  height: 100%;
 }
-.info{
-    /* background: teal; */
-    padding: 1em;
-
-    
+.info {
+  /* background: teal; */
+  padding: 1em;
 }
-.info p{
+.info p {
   cursor: pointer;
 }
-.info label{
-display: flex;
-gap:1em;
-font-size: 18px;
-font-weight: 700;
+.info label {
+  display: flex;
+  gap: 1em;
+  font-size: 18px;
+  font-weight: 700;
 }
-.info input{
-    cursor: pointer;
+.info input {
+  cursor: pointer;
 }
 
-.type_title h1{
-    padding-left: 0.2em;
-    position: relative;
+.type_title h1 {
+  padding-left: 0.2em;
+  position: relative;
 }
 </style>

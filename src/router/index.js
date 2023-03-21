@@ -28,37 +28,37 @@ const router = createRouter({
     {
       path: '/:id/year/:year_id/course/:course_id/course_type/:course_type_id/semester/:semester_id/units',
       name: 'units',
-      component: Units_Page,
+      component: Units_Page
     },
     {
       path: '/:id/year/:year_id/course/:course_id/course_type/:course_type_id/semester/:semester_id/units/:unit_id/folders',
       name: 'folders',
-      component: Folders_Page,
+      component: Folders_Page
     },
     {
       path: '/:id/year/:year_id/course/:course_id/course_type/:course_type_id/semester/:semester_id/units/:unit_id/folders/:folder_id/documents',
       name: 'documents',
-      component: Documents_Page,
+      component: Documents_Page
     },
     {
       path: '/signin_page',
       name: 'register',
-      component: Signin_Page,
+      component: Signin_Page
     },
     {
       path: '/login_page',
       name: 'login',
-      component: Login_Page,
+      component: Login_Page
     },
     {
       path: '/types_page/:type',
       name: 'types',
-      component: Subjects,
+      component: Subjects
     },
     {
       path: '/admin/:id',
       name: 'admin',
-      component: Dashboard,
+      component: Dashboard
     }
   ]
 })

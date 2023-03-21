@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import router from '../router'
 const tokenExists = ref(false)
-const showUploads = ref(false);
+const showUploads = ref(false)
 
 const handleToken = () => {
   if ((tokenExists.value = localStorage.getItem('token') !== null)) {
@@ -11,10 +11,9 @@ const handleToken = () => {
   }
 }
 
-const showContainer = ()=>{
+const showContainer = () => {
   showUploads.value = true
 }
-
 </script>
 
 <template>
@@ -33,7 +32,7 @@ const showContainer = ()=>{
 
       <div class="auth_buttons">
         <!-- UPLOAD FILE -->
-        <button @click="showContainer" >Upload File</button>
+        <button @click="showContainer">Upload File</button>
         <!-- WRITE ARTICLE -->
         <RouterLink :to="{ name: 'login' }" v-if="!tokenExists">Write Article</RouterLink>
         <!-- VIEW OWN NOTES -->

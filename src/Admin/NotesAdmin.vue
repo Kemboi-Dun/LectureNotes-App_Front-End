@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { getApi } from '../api/Api'
 import { useRouter, useRoute } from 'vue-router'
+// import Comments from './Comments.vue';
 
 const router = useRouter()
 const route = useRoute()
@@ -9,6 +10,14 @@ const tokenExists = ref(false)
 const users = ref([])
 const files = ref([])
 const filteredFiles = ref([])
+
+// MANAGE COMMENTS BELOW
+const comments = ref([])
+const filteredComments = ref([])
+
+const getCommentApi = async () => {
+  return await getApi.get('/comments')
+}
 
 // GET FILES FROM API
 const getFilesApi = async () => {
@@ -30,14 +39,20 @@ const getUserApi = async () => {
 const deleteFile = (file_id) => {
   const id = file_id
   console.log(id)
-   getApi.delete(`/file/${id}`)
-   .then((response)=>{
-    console.log(response.data);
-    filteredFiles.value = filteredFiles.value.filter(file => file.ID !== file_id);
-   })
+  getApi.delete(`/file/${id}`).then((response) => {
+    console.log(response.data)
+    filteredFiles.value = filteredFiles.value.filter((file) => file.ID !== file_id)
+  })
 }
-
-
+const handleComments = async (folderId) => {
+  const id = folderId
+  console.log(id)
+  await getApi.get(`/comment/${id}`).then((response) => {
+    console.log(response.data)
+    filteredComments.value = comments.value.filter((file) => file.FolderID == id)
+    console.log(filteredComments.value)
+  })
+}
 
 onMounted(() => {
   // CHECK FOR TOKEN BEFORE LOADING THE PAGE
@@ -56,11 +71,22 @@ onMounted(() => {
     // console.log(response.data.files)
     files.value = response.data.documents
     console.log(files.value)
-    // Filter the array based on the type of the "Subject/CourseName" property
+    // Filter the array based on the type of the "AuthorID" property
     filteredFiles.value = files.value.filter((item) => item.AuthorID == users.value.ID)
     console.log(filteredFiles.value)
   })
-//   deleteFile()
+
+  getCommentApi().then((response) => {
+    console.log(response.data)
+    comments.value = response.data.comments
+    console.log(comments.value)
+
+    // // Filter the array based on the type of the "FolderID" property
+    // filteredComments.value = comments.value.filter((item) => item.FolderID == users.value.ID)
+    // console.log(filteredComments.value)
+  })
+
+  //   deleteFile()
 })
 </script>
 
@@ -100,10 +126,20 @@ onMounted(() => {
             </td>
             <td>
               <i @click="deleteFile(item.ID)" class="fa-solid fa-trash"></i>
+              <button @click.prevent="handleComments(item.ID)">Comments</button>
             </td>
           </tr>
         </tbody>
       </table>
+
+      <div class="comments_wrapper" v-for="comment in filteredComments" :key="comment.ID">
+        <p>{{ comment.AuthorName }}</p>
+        <span>
+          {{ comment.Body }}
+        </span>
+      </div>
+
+      <!-- <Comments/> -->
     </div>
   </div>
 </template>

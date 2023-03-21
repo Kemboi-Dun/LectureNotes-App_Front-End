@@ -47,24 +47,23 @@ const getFile = () => {
     })
 }
 
-
-const downloadFile = async(fileId)=> {
+const downloadFile = async (fileId) => {
   await fetch(`/DOC_DOWNLOAD/${fileId}`)
-        .then(response => response.blob())
-        .then(blob => {
-          const url = window.URL.createObjectURL(new Blob([blob]));
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = fileId;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-        })
-        .catch(error => {
-          console.log("CAN NOT DOWNLOAD FILE..")
-          console.error(error);
-        });
-    }
+    .then((response) => response.blob())
+    .then((blob) => {
+      const url = window.URL.createObjectURL(new Blob([blob]))
+      const a = document.createElement('a')
+      a.href = url
+      a.download = fileId
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+    })
+    .catch((error) => {
+      console.log('CAN NOT DOWNLOAD FILE..')
+      console.error(error)
+    })
+}
 
 // const forceFileDownload = (response, item) => {
 //   var headers = response.headers

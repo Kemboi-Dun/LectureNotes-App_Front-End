@@ -1,7 +1,7 @@
 <script setup>
-import { ref,onMounted } from 'vue'
-import { useRoute,useRouter } from 'vue-router';
-import { getApi } from '../api/Api';
+import { ref, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { getApi } from '../api/Api'
 
 const Name = ref('')
 const courseType = ref('')
@@ -10,14 +10,14 @@ const unitName = ref('')
 const unitCode = ref('')
 const type = ref('')
 // const document = ref('')
-const user = ref('');
-const route = useRoute();
-const router = useRouter();
+const user = ref('')
+const route = useRoute()
+const router = useRouter()
 
-const file = ref('');
-const formData = ref([]);
-const items = ref([]);
-const filteredDocs = ref([]);
+const file = ref('')
+const formData = ref([])
+const items = ref([])
+const filteredDocs = ref([])
 // const filteredPaths = ref([]);
 
 // POST FILE DATA ON SUBMIT
@@ -39,13 +39,13 @@ const filteredDocs = ref([]);
 // }
 
 // GET USER DATA
-const getUserApi = async ()=>{
-    const id = route.params.id;
-    return await getApi.get(`/user/${id}`);
+const getUserApi = async () => {
+  const id = route.params.id
+  return await getApi.get(`/user/${id}`)
 }
 // GET FILEs
-const getFilesApi = async ()=>{
-    return await getApi.get('/files');
+const getFilesApi = async () => {
+  return await getApi.get('/files')
 }
 
 const onFileChange = () => {
@@ -55,36 +55,33 @@ const onFileChange = () => {
 }
 
 const handleSubmit = async () => {
-
-  formData.value = new FormData();
-    formData.value.append('Name',  Name.value);
-    formData.value.append('CourseType', courseType.value);
-    formData.value.append('Semester', semester.value);
-    formData.value.append('UnitName', unitName.value);
-    formData.value.append('UnitCode', unitCode.value.toUpperCase());
-    formData.value.append('Type', type.value.toLowerCase());
-    formData.value.append('file', file.value);
-    formData.value.append('Year', new Date().getFullYear());
-    formData.value.append('AuthorName', user.value.Username);
-    formData.value.append('CourseName', user.value.School);
-    formData.value.append('AuthorID', user.value.ID);
-    // formData.value.append('AuthorID', file.value);
-      console.log(formData.value)
-    try {
+  formData.value = new FormData()
+  formData.value.append('Name', Name.value)
+  formData.value.append('CourseType', courseType.value)
+  formData.value.append('Semester', semester.value)
+  formData.value.append('UnitName', unitName.value)
+  formData.value.append('UnitCode', unitCode.value.toUpperCase())
+  formData.value.append('Type', type.value.toLowerCase())
+  formData.value.append('file', file.value)
+  formData.value.append('Year', new Date().getFullYear())
+  formData.value.append('AuthorName', user.value.Username)
+  formData.value.append('CourseName', user.value.School)
+  formData.value.append('AuthorID', user.value.ID)
+  // formData.value.append('AuthorID', file.value);
+  console.log(formData.value)
+  try {
     const response = await fetch('http://localhost:3000/file', {
       method: 'POST',
       body: formData.value
-    });
+    })
 
- 
-
-console.log(response);
+    console.log(response)
     // Handle the response from the server as needed
   } catch (error) {
-    console.error(error);
+    console.error(error)
   }
 
-  router.push({name:'admin'})
+  router.push({ name: 'admin' })
   console.log(
     Name.value,
     courseType.value,
@@ -92,36 +89,31 @@ console.log(response);
     unitName.value,
     unitCode.value.toUpperCase(),
     file.value,
-    type.value,
+    type.value
   )
 }
 
+onMounted(() => {
+  getUserApi().then((response) => {
+    console.log(response.data.user)
+    user.value = response.data.user
+    console.log(user.value.ID)
+  })
 
-onMounted(()=>{
-    getUserApi()
-    .then((response)=>{
-        console.log(response.data.user);
-        user.value = response.data.user;
-        console.log(user.value.ID);
-    })
-    
-    getFilesApi()
-    .then((response)=>{
-        console.log(response.data.documents);
-        items.value = response.data.documents;
-        console.log(items.value)
+  getFilesApi().then((response) => {
+    console.log(response.data.documents)
+    items.value = response.data.documents
+    console.log(items.value)
 
-        filteredDocs.value = items.value.filter((item) => item.AuthorID == user.value.ID)
+    filteredDocs.value = items.value.filter((item) => item.AuthorID == user.value.ID)
     console.log(filteredDocs.value)
-
-    })
+  })
 })
-
 </script>
 <template>
   <div class="upload_container">
     <div class="upload_wrapper">
-      <form @submit.prevent="handleSubmit"  enctype="multipart/form-data">
+      <form @submit.prevent="handleSubmit" enctype="multipart/form-data">
         <!-- FILE NAME -->
         <label for="Name">File Name</label>
         <input type="text" v-model="Name" required />
@@ -177,9 +169,9 @@ onMounted(()=>{
         <button type="submit">Upload File</button>
       </form>
     </div>
-        <div class="display_file" v-for="item in filteredDocs" :key="item.ID">
-        {{ item.Path }}
-        <!-- {{ item.AuthorID }} -->
+    <div class="display_file" v-for="item in filteredDocs" :key="item.ID">
+      {{ item.Path }}
+      <!-- {{ item.AuthorID }} -->
     </div>
   </div>
 </template>

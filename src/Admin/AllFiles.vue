@@ -21,14 +21,14 @@ const getUserApi = async () => {
   return await getApi.get(`/user/${id}`)
 }
 
-onMounted( async() => {
+onMounted(async () => {
   // CHECK FOR TOKEN BEFORE LOADING THE PAGE
   tokenExists.value =
     localStorage.getItem('token') !== null
       ? console.log('Token exists..')
       : router.push({ name: 'login' })
 
-      await getUserApi().then((response) => {
+  await getUserApi().then((response) => {
     // console.log(response.data)
     users.value = response.data.user
     console.log(users.value.School)

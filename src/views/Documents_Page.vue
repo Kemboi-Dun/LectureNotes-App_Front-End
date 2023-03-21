@@ -2,13 +2,13 @@
 import axios from 'axios'
 import { ref, onMounted } from 'vue'
 import CommentsPage from './CommentsPage.vue'
-import { RouterLink,useRoute } from 'vue-router'
+import { RouterLink, useRoute } from 'vue-router'
 import Navbar from '../components/Navbar.vue'
 import Footer from '../components/Footer.vue'
 import { getApi } from '../api/Api'
 
-const filesrcs = ref([]);
-const route = useRoute();
+const filesrcs = ref([])
+const route = useRoute()
 const filteredDocuments = ref([])
 const filteredParams = ref({
   year_id: route.params.year_id,
@@ -16,14 +16,14 @@ const filteredParams = ref({
   course_id: route.params.course_id,
   semester_id: route.params.semester_id,
   unit_id: route.params.unit_id,
-  folder_id: route.params.folder_id,
-});
+  folder_id: route.params.folder_id
+})
 
-const users = ref([]);
- 
+const users = ref([])
+
 const getUserApi = async () => {
   const id = route.params.id
-  console.log(id);
+  console.log(id)
   return await getApi.get(`/user/${id}`)
 }
 
@@ -33,14 +33,28 @@ const getDocApi = () => {
 }
 
 const filtereDocuments = () => {
-  const { year_id,course_type_id,course_id,semester_id,unit_id, folder_id } = filteredParams.value
+  const { year_id, course_type_id, course_id, semester_id, unit_id, folder_id } =
+    filteredParams.value
 
   console.log(unit_id)
-  console.log('Year:' + year_id, "Course Type:" + course_type_id, "Course:" + course_id, "Semester:" + semester_id, "Unit:" + unit_id  )
+  console.log(
+    'Year:' + year_id,
+    'Course Type:' + course_type_id,
+    'Course:' + course_id,
+    'Semester:' + semester_id,
+    'Unit:' + unit_id
+  )
 
-  return filteredDocuments.value = filesrcs.value.filter((item) => item.Year == year_id && item.CourseType == course_type_id && item.CourseName == course_id && item.Semester == semester_id && item.UnitName == unit_id && item.ID == folder_id)
+  return (filteredDocuments.value = filesrcs.value.filter(
+    (item) =>
+      item.Year == year_id &&
+      item.CourseType == course_type_id &&
+      item.CourseName == course_id &&
+      item.Semester == semester_id &&
+      item.UnitName == unit_id &&
+      item.ID == folder_id
+  ))
 }
-
 
 const getFile = () => {
   getDocApi()
@@ -55,23 +69,24 @@ const getFile = () => {
     })
 }
 
-const downloadFile = async(fileId)=> {
-  await getApi.get(`/DOC_DOWNLOAD/${fileId}`)
-        .then(response => response.blob())
-        .then(blob => {
-          const url = window.URL.createObjectURL(new Blob([blob]));
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = fileId;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-        })
-        .catch(error => {
-          console.log("CAN NOT DOWNLOAD FILE..")
-          console.error(error);
-        });
-    }
+const downloadFile = async (fileId) => {
+  await getApi
+    .get(`/DOC_DOWNLOAD/${fileId}`)
+    .then((response) => response.blob())
+    .then((blob) => {
+      const url = window.URL.createObjectURL(new Blob([blob]))
+      const a = document.createElement('a')
+      a.href = url
+      a.download = fileId
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+    })
+    .catch((error) => {
+      console.log('CAN NOT DOWNLOAD FILE..')
+      console.error(error)
+    })
+}
 
 // const forceFileDownload = (response, item) => {
 //   var headers = response.headers
@@ -98,8 +113,7 @@ const downloadFile = async(fileId)=> {
 //     })
 // }
 onMounted(() => {
-  
-      getUserApi().then((response) => {
+  getUserApi().then((response) => {
     console.log(response.data)
     users.value = response.data.user
     console.log(users.value.ID)
@@ -120,7 +134,11 @@ onMounted(() => {
       <div class="downloads_wrapper">
         <div class="download_wrapper">
           <ol>
-            <li class="download_cont_wrapper" v-for="(filesrc, index) in filteredDocuments" :key="index">
+            <li
+              class="download_cont_wrapper"
+              v-for="(filesrc, index) in filteredDocuments"
+              :key="index"
+            >
               <div @click.prevent="downloadFile(filesrc.Path)">
                 <a :href="filesrc.Path" target="_blank" class="download_doc">
                   <span>
