@@ -1,12 +1,19 @@
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { getApi } from '../api/Api'
 import router from '../router'
 const tokenExists = ref(false)
+const route = useRoute()
 
 const searchQuery = ref('')
-// const filteredItem= ref([]);
 const files = ref([])
+const user = ref('')
+
+const getUserApi = async () => {
+  const userId = route.params.id
+  return await getApi.get(`/user/${userId}`)
+}
 
 const handleToken = () => {
   if ((tokenExists.value = localStorage.getItem('token') !== null)) {
@@ -37,7 +44,16 @@ watch(searchQuery, () => {
   filteredItems.value
 })
 
+const downloadFile = async (fileId) => {
+  await getApi.get(`/show/${fileId}`)
+}
+
 onMounted(() => {
+  getUserApi().then((response) => {
+    console.log(response.data)
+    user.value = response.data.user
+  })
+
   getFilesApi().then((response) => {
     files.value = response.data.documents
     console.log(files.value)
@@ -65,7 +81,7 @@ onMounted(() => {
         <ul>
           <li v-for="item in filteredItems" :key="item.ID">
             {{ item.AuthorName }}
-            <a :href="item.Path" target="_blank">
+            <a href="#" @click="downloadFile(item.Name)">
               {{ item.Name }}
               <i class="fa-solid fa-download"></i>
             </a>
@@ -75,6 +91,7 @@ onMounted(() => {
       <div class="auth_buttons">
         <RouterLink :to="{ name: 'login' }" v-if="tokenExists">LogIn</RouterLink>
         <RouterLink :to="{ name: 'register' }" v-if="tokenExists">Create Account</RouterLink>
+        <span v-if="!tokenExists">{{ user.Username }}</span>
         <button @click="handleToken" v-if="!tokenExists">Log Out</button>
       </div>
     </nav>
@@ -85,7 +102,6 @@ onMounted(() => {
 .title a img {
   height: 3.4em;
   width: 12em;
-  /* object-fit: cover; */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -95,7 +111,6 @@ onMounted(() => {
   width: 90%;
   margin: auto;
   align-items: center;
-  /* background: var(--dim-light-background); */
   padding: 0.5em;
 }
 .nav_wrapper nav {
@@ -117,7 +132,6 @@ onMounted(() => {
   border-radius: 6px;
   padding: 0.8em;
   width: 30em;
-  /* font-size:16px; */
 }
 .search_bar input:focus {
   outline: none;
@@ -131,7 +145,6 @@ onMounted(() => {
 .auth_buttons a {
   text-decoration: none;
   color: #181818;
-  /* background: #181818; */
   padding: 0.8rem;
   border: 1px solid #181818;
   border-radius: 12px;
@@ -150,5 +163,9 @@ onMounted(() => {
 .auth_buttons button:hover {
   background: #181818;
   color: #f8f8f8;
+}
+.auth_buttons span {
+  font-weight: 700;
+  font-size: 24px;
 }
 </style>

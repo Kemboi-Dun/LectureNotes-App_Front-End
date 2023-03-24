@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getApi } from '../api/Api'
 
-const Name = ref('')
+// const Name = ref('')
 const courseType = ref('')
 const semester = ref('')
 const unitName = ref('')
@@ -21,22 +21,6 @@ const filteredDocs = ref([])
 // const filteredPaths = ref([]);
 
 // POST FILE DATA ON SUBMIT
-
-// const postFileApi = () =>{
-//     return getApi.post('/file',{
-//         Name: Name.value,
-//         CourseType: courseType.value,
-//         Semester: semester.value,
-//         UnitName: unitName.value,
-//         UnitCode: unitCode.value.toUpperCase(),
-//         Type: type.value.toLowerCase(),
-//         Path: filteredDocs.value[0].Path,
-//         Year:new Date().getFullYear(),
-//         AuthorName: user.value.Username,
-//         CourseName: user.value.School,
-//         AuthorID: user.value.ID,
-//     })
-// }
 
 // GET USER DATA
 const getUserApi = async () => {
@@ -56,7 +40,7 @@ const onFileChange = () => {
 
 const handleSubmit = async () => {
   formData.value = new FormData()
-  formData.value.append('Name', Name.value)
+  // formData.value.append('Name', Name.value)
   formData.value.append('CourseType', courseType.value)
   formData.value.append('Semester', semester.value)
   formData.value.append('UnitName', unitName.value)
@@ -74,6 +58,13 @@ const handleSubmit = async () => {
       method: 'POST',
       body: formData.value
     })
+    alert('File uploaded succesfully!')
+    courseType.value = ''
+    semester.value = ''
+    unitName.value = ''
+    unitCode.value = ''
+    type.value = ''
+    file.value = ''
 
     console.log(response)
     // Handle the response from the server as needed
@@ -83,7 +74,7 @@ const handleSubmit = async () => {
 
   router.push({ name: 'admin' })
   console.log(
-    Name.value,
+    // Name.value,
     courseType.value,
     semester.value,
     unitName.value,
@@ -112,29 +103,17 @@ onMounted(() => {
 </script>
 <template>
   <div class="upload_container">
+    <h1>Upload File</h1>
+
     <div class="upload_wrapper">
       <form @submit.prevent="handleSubmit" enctype="multipart/form-data">
-        <!-- FILE NAME -->
-        <label for="Name">File Name</label>
-        <input type="text" v-model="Name" required />
-        <!-- YEAR -->
-        <!-- <label for="year">Year</label>
-                <input type="date" required> -->
-        <!-- CourseType -->
         <label for="courseType">Course Type</label>
         <select name="courseType" v-model="courseType" required>
           <option value="Certificate">Certificate</option>
           <option value="Diploma">Diploma</option>
           <option value="Degree">Degree</option>
         </select>
-        <!-- CourseName -->
-        <!-- <label for="courseName">Course Name</label>
-                <select name="courseName" required>
-                    <option value="Computer Science">Computer Science</option>
-                    <option value="Education">Education</option>
-                    <option value="Bussiness">Bussiness</option>
-                </select> -->
-        <!-- Semester -->
+
         <label for="semester">Semester</label>
         <select name="semester" v-model="semester" required>
           <option value="1.1">1.1</option>
@@ -164,14 +143,178 @@ onMounted(() => {
 
         <!-- FILE -->
         <!-- <label for="document">Doc</label> -->
-        <input type="file" @change="onFileChange" name="file" />
-
-        <button type="submit">Upload File</button>
+        <input class="file_input" type="file" @change="onFileChange" name="file" />
+        <button type="submit" class="button">
+          <span class="button_lg">
+            <span class="button_sl"></span>
+            <span class="button_text">Upload File</span>
+          </span>
+        </button>
+        <!-- <button type="submit">Upload File</button> -->
       </form>
-    </div>
-    <div class="display_file" v-for="item in filteredDocs" :key="item.ID">
-      {{ item.Path }}
-      <!-- {{ item.AuthorID }} -->
     </div>
   </div>
 </template>
+<style scoped>
+.upload_container {
+  background: #f8f8f8;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+
+  margin: auto;
+  height: 70vh;
+  width: 70%;
+  padding: 0.6em 2em;
+  border-radius: 4px;
+}
+.upload_wrapper {
+  width: 50%;
+}
+.upload_wrapper form {
+  display: flex;
+  flex-direction: column;
+  width: 60%;
+  font-size: 18px;
+  gap: 0.5em;
+}
+.upload_wrapper input {
+  height: 30px;
+  font-size: 18px;
+  padding: 0.4em 0.8em;
+  border: 1px solid grey;
+  border-radius: 3px;
+  outline: none;
+}
+.upload_wrapper select {
+  height: 30px;
+  outline: none;
+  cursor: pointer;
+  border: 1px solid grey;
+  border-radius: 3px;
+  font-size: 18px;
+}
+.file_input {
+  padding: 0.1em !important;
+  cursor: pointer;
+}
+
+.button {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  border: none;
+  background: none;
+  color: #0f1923;
+  cursor: pointer;
+  position: relative;
+  padding: 8px;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 14px;
+  transition: all 0.15s ease;
+}
+
+.button::before,
+.button::after {
+  content: '';
+  display: block;
+  position: absolute;
+  right: 0;
+  left: 0;
+  height: calc(50% - 5px);
+  border: 1px solid #7d8082;
+  transition: all 0.15s ease;
+}
+
+.button::before {
+  top: 0;
+  border-bottom-width: 0;
+}
+
+.button::after {
+  bottom: 0;
+  border-top-width: 0;
+}
+
+.button:active,
+.button:focus {
+  outline: none;
+}
+
+.button:active::before,
+.button:active::after {
+  right: 3px;
+  left: 3px;
+}
+
+.button:active::before {
+  top: 3px;
+}
+
+.button:active::after {
+  bottom: 3px;
+}
+
+.button_lg {
+  position: relative;
+  display: block;
+  padding: 10px 20px;
+  color: #fff;
+  background-color: #0f1923;
+  overflow: hidden;
+  box-shadow: inset 0px 0px 0px 1px transparent;
+}
+
+.button_lg::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2px;
+  height: 2px;
+  background-color: #0f1923;
+}
+
+.button_lg::after {
+  content: '';
+  display: block;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 4px;
+  height: 4px;
+  background-color: #0f1923;
+  transition: all 0.2s ease;
+}
+
+.button_sl {
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: -1px;
+  left: -8px;
+  width: 0;
+  background-color: #047a67;
+  transform: skew(-15deg);
+  transition: all 0.2s ease;
+}
+
+.button_text {
+  position: relative;
+}
+
+.button:hover {
+  color: #0f1923;
+}
+
+.button:hover .button_sl {
+  width: calc(100% + 15px);
+}
+
+.button:hover .button_lg::after {
+  background-color: #fff;
+}
+</style>

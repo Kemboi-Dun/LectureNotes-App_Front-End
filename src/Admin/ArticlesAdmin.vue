@@ -52,7 +52,6 @@ const addArticle = async () => {
       title.value = ''
       authorName.value = ''
       newArticleText.value = ''
-      // articles.value = articles.value.filter(article => article.ID !== articleId);
     })
     .catch((error) => {
       console.log(error)
@@ -72,10 +71,6 @@ const deleteArticle = async (articleId) => {
     })
 }
 
-// watch(filteredArticles.value,{
-// filteredArticles.value
-// })
-
 onMounted(async () => {
   await getUserApi().then((response) => {
     console.log(response.data.user)
@@ -89,106 +84,226 @@ onMounted(async () => {
 
 <template>
   <div class="article_container">
-    <h2>Articles ({{ filteredArticles.length }})</h2>
-
-    <div class="articles_wrapper">
-      <ul>
-        <li v-for="article in filteredArticles" :key="article.ID">
-          <span>{{ article.Tag }}</span>
-          <span>{{ article.Title }}</span>
-          <p>{{ article.AuthorName }}</p>
-          <span>{{ article.UpdatedAt }}</span>
-          <span>{{ article.Body }}</span>
-          <div @click="deleteArticle(article.ID)"><i class="fa-solid fa-trash"></i></div>
-        </li>
-      </ul>
-    </div>
-
-    <form @submit="addArticle">
-      <label for="title">Title:</label>
-      <input type="text" v-model="title" />
-      <label for="article">Write a article</label>
-      <textarea
-        v-model="newArticleText"
-        cols="8"
-        rows="4"
-        placeholder="Write your article here.."
-      ></textarea>
-      <label for="tag">Tag:</label>
-      <input type="text" placeholder="Security, food.." v-model="tag" />
-      <div>
-        <button type="submit">Add article</button>
+    <h2>My Articles ({{ filteredArticles.length }})</h2>
+    <div class="article_split">
+      <div class="articles_wrapper">
+        <ul>
+          <li v-for="article in filteredArticles" :key="article.ID">
+            <i class="tag">{{ article.Tag }}</i>
+            <span class="title">{{ article.Title }}</span>
+            <span>{{ article.UpdatedAt }}</span>
+            <span class="body">{{ article.Body }}</span>
+            <button class="trash">
+              <div @click="deleteArticle(article.ID)"><i class="fa-solid fa-trash"></i></div>
+            </button>
+          </li>
+        </ul>
       </div>
-    </form>
+
+      <form @submit="addArticle">
+        <label for="title">Title:</label>
+        <input type="text" v-model="title" />
+        <label for="article">Write a article</label>
+        <textarea
+          v-model="newArticleText"
+          cols="8"
+          rows="4"
+          placeholder="Write your article here.."
+        ></textarea>
+        <label for="tag">Tag:</label>
+        <input type="text" placeholder="Security, food.." v-model="tag" />
+        <div>
+          <button type="submit" class="button">
+            <span class="button_lg">
+              <span class="button_sl"></span>
+              <span class="button_text">Add article</span>
+            </span>
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 </template>
 <style scoped>
-.article_container {
-  /* background: gold; */
-  width: 90%;
-  margin: auto;
-  padding: 0 2em;
-  /* position: relative; */
-}
-.article_container h2 {
-  /* position: fixed; */
-  background: #f8f8f8;
-  padding: 0.5em;
-
-  /* width:50%; */
-}
-.articles_wrapper ul {
+.articles_wrapper li {
   list-style: none;
   display: flex;
-  justify-content: space-around;
-  align-self: center;
   flex-direction: column;
-  gap: 1em;
-  padding: 2em 0;
 }
-.articles_wrapper li {
-  /* background: #f6f6f6; */
-  width: 100%;
+.tag {
+  text-transform: capitalize;
+}
+.title {
+  font-weight: 700;
+}
+.trash {
+  width: 12em;
+  padding: 0.3em;
+  margin: 0.6em 0;
+  cursor: pointer;
+}
+.body {
+  font-size: 18px;
+}
+
+.article_split {
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 4em;
+}
+.article_container {
+  background: #f8f8f8;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  font-size: 18px;
-  padding: 0.4em 0;
-  padding-bottom: 2px;
-  /* align-items: center; */
-}
-.articles_wrapper span {
-  margin: 1em 0;
-}
-.articles_wrapper i {
+  justify-content: space-around;
+  margin: auto;
+  height: 70vh;
+  width: 70%;
   padding: 0.6em 2em;
-  background: #f8f8f8;
-  margin: 4px 0;
-  cursor: pointer;
+  border-radius: 4px;
+}
+.articles_wrapper {
+  width: 50%;
 }
 .article_container form {
   display: flex;
   flex-direction: column;
+  width: 60%;
+  font-size: 18px;
+  gap: 0.5em;
 }
-.article_container form textarea {
-  /* border:none; */
-  border-radius: 6px;
-  padding: 1em;
-  font-size: 16px;
+.article_container input {
+  height: 30px;
+  font-size: 18px;
+  padding: 0.4em 0.8em;
+  border: 1px solid grey;
+  border-radius: 3px;
   outline: none;
 }
-.article_container form button {
-  /* border: none; */
-  background: #f8f8f8;
-  color: #181818;
-  padding: 0.6em 2em;
-  font-size: 16px;
-  margin: 1em 0;
-  border-radius: 6px;
-  cursor: pointer;
+.article_container textarea {
+  font-size: 18px;
+  padding: 0.4em 0.8em;
+  border: 1px solid grey;
+  border-radius: 3px;
+  outline: none;
 }
-.article_container form button:hover {
-  background: #181818;
-  color: #f8f8f8;
+
+.button {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  border: none;
+  background: none;
+  color: #0f1923;
+  cursor: pointer;
+  position: relative;
+  padding: 8px;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 14px;
+  transition: all 0.15s ease;
+}
+
+.button::before,
+.button::after {
+  content: '';
+  display: block;
+  position: absolute;
+  right: 0;
+  left: 0;
+  height: calc(50% - 5px);
+  border: 1px solid #7d8082;
+  transition: all 0.15s ease;
+}
+
+.button::before {
+  top: 0;
+  border-bottom-width: 0;
+}
+
+.button::after {
+  bottom: 0;
+  border-top-width: 0;
+}
+
+.button:active,
+.button:focus {
+  outline: none;
+}
+
+.button:active::before,
+.button:active::after {
+  right: 3px;
+  left: 3px;
+}
+
+.button:active::before {
+  top: 3px;
+}
+
+.button:active::after {
+  bottom: 3px;
+}
+
+.button_lg {
+  position: relative;
+  display: block;
+  padding: 10px 20px;
+  color: #fff;
+  background-color: #0f1923;
+  overflow: hidden;
+  box-shadow: inset 0px 0px 0px 1px transparent;
+}
+
+.button_lg::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2px;
+  height: 2px;
+  background-color: #0f1923;
+}
+
+.button_lg::after {
+  content: '';
+  display: block;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 4px;
+  height: 4px;
+  background-color: #0f1923;
+  transition: all 0.2s ease;
+}
+
+.button_sl {
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: -1px;
+  left: -8px;
+  width: 0;
+  background-color: #047a67;
+  transform: skew(-15deg);
+  transition: all 0.2s ease;
+}
+
+.button_text {
+  position: relative;
+}
+
+.button:hover {
+  color: #0f1923;
+}
+
+.button:hover .button_sl {
+  width: calc(100% + 15px);
+}
+
+.button:hover .button_lg::after {
+  background-color: #fff;
 }
 </style>

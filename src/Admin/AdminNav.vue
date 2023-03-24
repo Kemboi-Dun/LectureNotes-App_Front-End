@@ -1,8 +1,18 @@
 <script setup>
-import { ref } from 'vue'
-import router from '../router'
+import { ref, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { getApi } from '../api/Api'
 const tokenExists = ref(false)
 const showUploads = ref(false)
+
+const user = ref('')
+const route = useRoute()
+const router = useRouter()
+
+const getUserApi = async () => {
+  const userId = route.params.id
+  return await getApi.get(`/user/${userId}`)
+}
 
 const handleToken = () => {
   if ((tokenExists.value = localStorage.getItem('token') !== null)) {
@@ -14,6 +24,13 @@ const handleToken = () => {
 const showContainer = () => {
   showUploads.value = true
 }
+onMounted(() => {
+  getUserApi().then((response) => {
+    console.log("THIS DISPLAY'S WHEN MOUNTED..")
+    console.log(response.data)
+    user.value = response.data.user
+  })
+})
 </script>
 
 <template>
@@ -39,6 +56,9 @@ const showContainer = () => {
         <RouterLink :to="{ name: 'login' }" v-if="!tokenExists">View Own Notes</RouterLink>
         <!-- MY ACCOUNT -->
         <RouterLink :to="{ name: 'login' }" v-if="!tokenExists">My Account</RouterLink>
+
+        <span v-if="!tokenExists">{{ user.Username }}</span>
+
         <button @click="handleToken" v-if="!tokenExists">Log Out</button>
       </div>
     </nav>
@@ -101,5 +121,9 @@ const showContainer = () => {
 .auth_buttons button:hover {
   background: #181818;
   color: #f8f8f8;
+}
+.auth_buttons span {
+  font-weight: 700;
+  font-size: 24px;
 }
 </style>

@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import ArticlesAdmin from './ArticlesAdmin.vue'
 import Footer from '../components/Footer.vue'
 import AdminNav from './AdminNav.vue'
@@ -7,9 +7,10 @@ import AllFiles from './AllFiles.vue'
 import UploadFile from './UploadFile.vue'
 import NotesAdmin from './NotesAdmin.vue'
 import Account from './Account.vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import ArticlesPage from './ArticlesPage.vue'
 import Comments from './Comments.vue'
+import { getApi } from '../api/Api'
 
 const router = useRouter()
 const tokenExists = ref(false)
@@ -19,6 +20,15 @@ const showArticles = ref(false)
 const showArticlesId = ref(false)
 const showNotes = ref(false)
 const showAccounts = ref(false)
+
+const user = ref('')
+const route = useRoute()
+// const router = useRouter();
+
+const getUserApi = async () => {
+  const userId = route.params.id
+  return await getApi.get(`/user/${userId}`)
+}
 
 const handleToken = () => {
   if ((tokenExists.value = localStorage.getItem('token') !== null)) {
@@ -72,6 +82,13 @@ const showAccount = () => {
   showArticles.value = false
   showNotes.value = false
 }
+onMounted(() => {
+  getUserApi().then((response) => {
+    console.log("THIS DISPLAY'S WHEN MOUNTED..")
+    console.log(response.data)
+    user.value = response.data.user
+  })
+})
 </script>
 
 <template>
@@ -103,6 +120,9 @@ const showAccount = () => {
           <button @click="showNote" v-if="!showNotes">View Own Notes</button>
           <!-- MY ACCOUNT -->
           <button @click="showAccount" v-if="!showAccounts">My Account</button>
+
+          <span v-if="!tokenExists">{{ user.Username }}</span>
+
           <button @click="handleToken" v-if="!tokenExists">Log Out</button>
         </div>
       </nav>
@@ -111,7 +131,7 @@ const showAccount = () => {
       <AllFiles v-if="showAll" />
       <UploadFile v-if="showUploads" />
       <ArticlesAdmin v-if="showArticles" />
-      <ArticlesPage v-if="showArticlesId" />
+      <!-- <ArticlesPage v-if="showArticlesId" /> -->
       <NotesAdmin v-if="showNotes" />
       <Account v-if="showAccounts" />
       <Comments />
@@ -176,5 +196,9 @@ const showAccount = () => {
 .auth_buttons button:hover {
   background: #181818;
   color: #f8f8f8;
+}
+.auth_buttons span {
+  font-weight: 700;
+  font-size: 20px;
 }
 </style>

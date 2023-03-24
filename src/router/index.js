@@ -51,7 +51,7 @@ const router = createRouter({
       component: Login_Page
     },
     {
-      path: '/types_page/:type',
+      path: '/:id/types_page/:type',
       name: 'types',
       component: Subjects
     },

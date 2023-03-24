@@ -20,7 +20,7 @@ onMounted(async () => {
   <div class="article_body_cont">
     <div class="articles_container">
       <div class="articles_wrapper" v-for="article in articles" :key="article.id">
-        <span>{{ article.Tag }}</span>
+        <i>{{ article.Tag }}</i>
         <a href="" target="_blank">
           <div class="title">
             <!-- {{ article.url}} -->
@@ -42,22 +42,15 @@ onMounted(async () => {
 
 <style scoped>
 .article_body_cont {
-  /* display: none; */
   position: fixed;
   top: 0;
   left: 0;
   width: 50%;
-  /* height: 80%; */
 }
 .articles_container {
-  /* height: 60%; */
-
-  /* background: firebrick; */
   position: relative;
 }
 .articles_wrapper {
-  /* position: relative; */
-  /* background: #f1f1f1; */
   padding: 1em;
 }
 </style>

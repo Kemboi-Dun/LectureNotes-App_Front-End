@@ -54,6 +54,10 @@ const handleComments = async (folderId) => {
   })
 }
 
+const downloadFile = async (fileId) => {
+  await getApi.get(`/show/${fileId}`)
+}
+
 onMounted(() => {
   // CHECK FOR TOKEN BEFORE LOADING THE PAGE
   tokenExists.value =
@@ -102,10 +106,11 @@ onMounted(() => {
             <th>Semester</th>
             <th>Course Type</th>
             <th>File Type</th>
-            <th>Uploaded By</th>
+
             <th>Date Updated</th>
             <th>Download</th>
             <th>Delete</th>
+            <th>View Comments</th>
           </tr>
         </thead>
         <tbody>
@@ -116,16 +121,18 @@ onMounted(() => {
             <td>{{ item.Semester }}</td>
             <td>{{ item.CourseType }}</td>
             <td>{{ item.Type }}</td>
-            <td>{{ item.AuthorName }}</td>
+            <!-- <td>{{ item.AuthorName }}</td> -->
             <td>{{ item.UpdatedAt }}</td>
 
             <td>
-              <a :href="item.Path">
+              <a href="#" @click="downloadFile(item.Name)">
                 <i class="fa-solid fa-download"></i>
               </a>
             </td>
-            <td>
+            <td class="trash">
               <i @click="deleteFile(item.ID)" class="fa-solid fa-trash"></i>
+            </td>
+            <td>
               <button @click.prevent="handleComments(item.ID)">Comments</button>
             </td>
           </tr>
@@ -143,3 +150,22 @@ onMounted(() => {
     </div>
   </div>
 </template>
+
+<style scoped>
+.comments_wrapper {
+  width: 90%;
+  margin: 2em auto;
+  background-color: #f8f8f8;
+}
+.comments_wrapper p {
+  font-size: 18px;
+  font-weight: 700;
+}
+tbody button {
+  cursor: pointer;
+  padding: 0.3em;
+}
+.trash {
+  cursor: pointer;
+}
+</style>

@@ -11,8 +11,8 @@ const date = new Date().getFullYear()
 
 <style scoped>
 .footer_wrapper {
+  padding: 0.8em 0;
   width: 90%;
   margin: auto;
-  /* background:lime; */
 }
 </style>

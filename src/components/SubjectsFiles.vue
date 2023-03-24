@@ -121,20 +121,6 @@ onMounted(() => {
   align-items: center;
 }
 
-/* .type_files_cont a {
-  height: 100%;
-  text-decoration: none;
-  color: #f8f8f8;
-  background: #181818;
-  padding: 1em 2em;
-  width: 8em;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 4px;
-  margin: 2em 0;
-} */
-
 .subjects_split {
   position: relative;
   display: flex;

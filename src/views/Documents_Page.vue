@@ -20,6 +20,7 @@ const filteredParams = ref({
 })
 
 const users = ref([])
+const errorMessages = ref(null)
 
 const getUserApi = async () => {
   const id = route.params.id
@@ -70,48 +71,9 @@ const getFile = () => {
 }
 
 const downloadFile = async (fileId) => {
-  await getApi
-    .get(`/DOC_DOWNLOAD/${fileId}`)
-    .then((response) => response.blob())
-    .then((blob) => {
-      const url = window.URL.createObjectURL(new Blob([blob]))
-      const a = document.createElement('a')
-      a.href = url
-      a.download = fileId
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-    })
-    .catch((error) => {
-      console.log('CAN NOT DOWNLOAD FILE..')
-      console.error(error)
-    })
+  await getApi.get(`/show/${fileId}`)
 }
 
-// const forceFileDownload = (response, item) => {
-//   var headers = response.headers
-//   var extension = item.Path.substring(item.Path.lastIndexOf('.') + 1)
-//   var blob = new Blob([response.data], { type: headers['content-type'] })
-//   var link = document.createElement('a')
-//   link.href = window.URL.createObjectURL(blob)
-//   link.download = `${item.name}.${extension}`
-//   link.click()
-//   link.remove()
-// }
-
-// const downloadFile = (item) => {
-//   axios({
-//     method: 'get',
-//     url: item.Path,
-//     responseType: 'blob'
-//   })
-//     .then((response) => {
-//       forceFileDownload(response, item)
-//     })
-//     .catch(() => {
-//       console.log('An error occured....')
-//     })
-// }
 onMounted(() => {
   getUserApi().then((response) => {
     console.log(response.data)
@@ -139,7 +101,7 @@ onMounted(() => {
               v-for="(filesrc, index) in filteredDocuments"
               :key="index"
             >
-              <div @click.prevent="downloadFile(filesrc.Path)">
+              <div @click.prevent="downloadFile(filesrc.Name)">
                 <a :href="filesrc.Path" target="_blank" class="download_doc">
                   <span>
                     {{ filesrc.Name }}

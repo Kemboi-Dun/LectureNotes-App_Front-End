@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div>
     <div v-for="message in messages" :key="message.id">
       {{ message }}
@@ -39,9 +39,9 @@ export default {
     }
   }
 }
-</script>
+</script> -->
 
-<!-- <script setup>
+<script setup>
 import { onMounted, ref } from 'vue';
 import {getApi} from '../api/Api';
 
@@ -54,9 +54,9 @@ const getFilesApi = async ()=>{
 }
 
 
-function viewFile(fileId) {
-  window.open(`http://localhost:3000/DOC_DOWNLOAD/${fileId}`, '_blank')
-}
+// function viewFile(fileId) {
+//   window.open(`http://localhost:3000/DOC_DOWNLOAD/${fileId}`, '_blank')
+// }
 
 function downloadFile(fileId) {
       fetch(`/DOC_DOWNLOAD/${fileId}`)
@@ -78,9 +78,9 @@ function downloadFile(fileId) {
     onMounted(()=>{
       getFilesApi()
       .then((response)=>{
-        console.log(response.data.documents);
-        items.value = response.data.documents;
-        console.log(items.value[0].Path);
+        console.log(response.data);
+        items.value = response.data;
+        // console.log(items.value[0].Path);
       })
     })
 
@@ -101,4 +101,4 @@ function downloadFile(fileId) {
 
     </div>
   </div>
-</template> -->
+</template>

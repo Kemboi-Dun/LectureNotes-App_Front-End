@@ -3,11 +3,6 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { getApi } from '../api/Api'
 
-// const log_in_data = reactive({
-//     email: '',
-//     password: '',
-// });
-
 const selectedEmail = ref(null)
 const selectedPassword = ref(null)
 const allowedEmail = ref(null)

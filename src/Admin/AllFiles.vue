@@ -21,6 +21,10 @@ const getUserApi = async () => {
   return await getApi.get(`/user/${id}`)
 }
 
+const downloadFile = async (fileId) => {
+  await getApi.get(`/show/${fileId}`)
+}
+
 onMounted(async () => {
   // CHECK FOR TOKEN BEFORE LOADING THE PAGE
   tokenExists.value =
@@ -29,13 +33,11 @@ onMounted(async () => {
       : router.push({ name: 'login' })
 
   await getUserApi().then((response) => {
-    // console.log(response.data)
     users.value = response.data.user
     console.log(users.value.School)
   })
 
   await getFilesApi().then((response) => {
-    // console.log(response.data.files)
     files.value = response.data.documents
     console.log(files.value)
     // Filter the array based on the type of the "Subject/CourseName" property
@@ -72,7 +74,7 @@ onMounted(async () => {
             <td>{{ item.UpdatedAt }}</td>
 
             <td>
-              <a :href="item.Path">
+              <a href="#" @click="downloadFile(item.Name)">
                 <i class="fa-solid fa-download"></i>
               </a>
             </td>
@@ -82,3 +84,26 @@ onMounted(async () => {
     </div>
   </div>
 </template>
+
+<style>
+.dashboard_wrapper {
+  width: 100%;
+  margin: auto;
+  background: #f8f8f8;
+}
+
+table,
+tr,
+th {
+  margin: auto;
+  border: 1px solid;
+  border-radius: 4px;
+  padding: 0.3em 0.6em;
+  width: 90%;
+}
+.dashboard_wrapper tbody td {
+  border: 1px solid grey;
+  padding: 0.3em 0.6em;
+  border-radius: 2px;
+}
+</style>

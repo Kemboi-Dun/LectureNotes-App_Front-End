@@ -38,6 +38,7 @@ const redirectToType = (file) => {
   router.push({
     name: 'types',
     params: {
+      id: router.params.id,
       type: file
     }
   })
