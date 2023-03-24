@@ -1,9 +1,12 @@
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useRouter,useRoute } from 'vue-router';
 import { getApi } from '../api/Api.js'
-import router from '../router'
+// import router from '../router'
 
 const files = ref([])
+const router = useRouter()
+const route = useRoute();
 const filteredSubjects = ref([])
 const filteredAuthors = ref([])
 const filteredTypes = ref([])
@@ -35,10 +38,11 @@ const showDate = () => {
 const redirectToType = (file) => {
   console.log(filteredTypes.value)
   // router.push({path: `/types_page/${file.Type}`
+  console.log(route.params.id);
   router.push({
     name: 'types',
     params: {
-      id: router.params.id,
+      id: route.params.id,
       type: file
     }
   })
